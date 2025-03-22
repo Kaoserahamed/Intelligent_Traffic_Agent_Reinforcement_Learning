@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewsettings>
+    <scheme name="real world"/>
+    <viewport x="100" y="100" zoom="500"/>
+    <delay value="100"/>
+    <showGrid value="false"/>
+    <showEdges value="true"/>
+    <showVehicles value="true"/>
+    <showSignals value="true"/>
+    <vehicle>
+        <colorMode>type</colorMode>
+    </vehicle>
+</viewsettings>

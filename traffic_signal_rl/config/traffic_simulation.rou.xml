@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    
+    <!-- Detailed Vehicle Type Definitions -->
+    <vType id="passenger_car" 
+            length="4.3" 
+            width="1.8" 
+            accel="2.6" 
+            decel="4.5" 
+            maxSpeed="50" 
+            speedFactor="0.9" 
+            speedDev="0.1" 
+            color="1,0,0"
+            emergencyDecel="4.5"
+            sigma="0.5"/>
+
+    <vType id="luxury_car" 
+            length="5.0" 
+            width="2.0" 
+            accel="3.0" 
+            decel="4.0" 
+            maxSpeed="60" 
+            speedFactor="1.0" 
+            color="0,0,1"
+            emergencyDecel="4.5"
+            sigma="0.3"/>
+
+    <vType id="sports_car" 
+            length="4.5" 
+            width="1.9" 
+            accel="3.5" 
+            decel="5.0" 
+            maxSpeed="70" 
+            speedFactor="1.2" 
+            color="1,1,0"
+            emergencyDecel="5.0"
+            sigma="0.2"/>
+
+    <vType id="electric_car" 
+            length="4.6" 
+            width="1.8" 
+            accel="3.2" 
+            decel="4.5" 
+            maxSpeed="55" 
+            speedFactor="0.95" 
+            color="0,1,0"
+            emergencyDecel="4.5"
+            sigma="0.4"/>
+
+    <vType id="truck" 
+            length="7.5" 
+            width="2.5" 
+            accel="1.8" 
+            decel="4.0" 
+            maxSpeed="40" 
+            speedFactor="0.8" 
+            color="0.5,0.5,0.5"
+            emergencyDecel="4.0"
+            sigma="0.6"/>
+
+    <!-- Emergency Vehicles -->
+    <vType id="emergency_ambulance" 
+            length="6.0" 
+            width="2.3" 
+            accel="3.5" 
+            decel="7.0" 
+            maxSpeed="70" 
+            speedFactor="1.2" 
+            color="1,0,0" 
+            guiShape="emergency"
+            emergencyDecel="9.0"
+            sigma="0.1"/>
+
+    <vType id="police_car" 
+            length="5.0" 
+            width="2.0" 
+            accel="3.2" 
+            decel="6.0" 
+            maxSpeed="60" 
+            speedFactor="1.1" 
+            color="0,0,1" 
+            guiShape="emergency"
+            emergencyDecel="8.0"
+            sigma="0.1"/>
+
+    <!-- Route Definitions -->
+    <route id="north_south" edges="north_edge center_south"/>
+    <route id="south_north" edges="south_edge center_north"/>
+    <route id="east_west" edges="east_edge center_west"/>
+    <route id="west_east" edges="west_edge center_east"/>
+
+    <!-- Vehicle Flows -->
+    <flow id="passenger_flow" 
+          type="passenger_car" 
+          route="north_south" 
+          begin="0" 
+          end="3600" 
+          probability="0.2"/>
+
+    <flow id="luxury_car_flow" 
+          type="luxury_car" 
+          route="south_north" 
+          begin="0" 
+          end="3600" 
+          probability="0.1"/>
+
+    <flow id="sports_car_flow" 
+          type="sports_car" 
+          route="east_west" 
+          begin="0" 
+          end="3600" 
+          probability="0.05"/>
+
+    <flow id="electric_car_flow" 
+          type="electric_car" 
+          route="west_east" 
+          begin="0" 
+          end="3600" 
+          probability="0.1"/>
+
+    <flow id="truck_flow" 
+          type="truck" 
+          route="north_south" 
+          begin="0" 
+          end="3600" 
+          probability="0.05"/>
+
+    <!-- Emergency Vehicle Flows -->
+    <flow id="ambulance_flow" 
+          type="emergency_ambulance" 
+          route="south_north" 
+          begin="0" 
+          end="3600" 
+          probability="0.02"/>
+
+    <flow id="police_flow" 
+          type="police_car" 
+          route="east_west" 
+          begin="0" 
+          end="3600" 
+          probability="0.02"/>
+</routes>

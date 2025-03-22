@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net version="1.16" junctionCornerDetail="5" limitTurnSpeed="5.50" 
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,200.00,200.00" 
+              origBoundary="0.00,0.00,200.00,200.00" projParameter="!"/>
+
+    <!-- Nodes -->
+    <junction id="center" type="traffic_light" x="100.00" y="100.00" 
+              shape="100.00,100.00 105.00,105.00 95.00,95.00">
+        <request index="0" response="0" foes="0"/>
+    </junction>
+    <junction id="north" type="dead_end" x="100.00" y="200.00"/>
+    <junction id="south" type="dead_end" x="100.00" y="0.00"/>
+    <junction id="east" type="dead_end" x="200.00" y="100.00"/>
+    <junction id="west" type="dead_end" x="0.00" y="100.00"/>
+
+    <!-- Precise Traffic Light Logic -->
+    <tlLogic id="center" type="static" programID="1" offset="0">
+        <!-- Ensure EXACTLY 8 characters in each phase state -->
+        <phase duration="31" state="GrGrGrGr"/>
+        <phase duration="5"  state="yryryryr"/>
+        <phase duration="31" state="rGrGrGrG"/>
+        <phase duration="5"  state="ryryryrr"/>
+    </tlLogic>
+
+    <!-- Edges -->
+    <edge id="north_edge" from="north" to="center" priority="1">
+        <lane id="north_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,200.00 100.00,150.00 100.00,100.00"/>
+    </edge>
+    
+    <edge id="south_edge" from="south" to="center" priority="1">
+        <lane id="south_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,0.00 100.00,50.00 100.00,100.00"/>
+    </edge>
+    
+    <edge id="east_edge" from="east" to="center" priority="1">
+        <lane id="east_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="200.00,100.00 150.00,100.00 100.00,100.00"/>
+    </edge>
+    
+    <edge id="west_edge" from="west" to="center" priority="1">
+        <lane id="west_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="0.00,100.00 50.00,100.00 100.00,100.00"/>
+    </edge>
+
+    <edge id="center_north" from="center" to="north" priority="1">
+        <lane id="center_north_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,100.00 100.00,150.00 100.00,200.00"/>
+    </edge>
+    
+    <edge id="center_south" from="center" to="south" priority="1">
+        <lane id="center_south_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,100.00 100.00,50.00 100.00,0.00"/>
+    </edge>
+    
+    <edge id="center_east" from="center" to="east" priority="1">
+        <lane id="center_east_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,100.00 150.00,100.00 200.00,100.00"/>
+    </edge>
+    
+    <edge id="center_west" from="center" to="west" priority="1">
+        <lane id="center_west_lane" index="0" speed="13.89" length="100" width="3.2" 
+              shape="100.00,100.00 50.00,100.00 0.00,100.00"/>
+    </edge>
+
+    <!-- Connections -->
+    <connection from="north_edge" to="center_south" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from="south_edge" to="center_north" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from="east_edge" to="center_west" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from="west_edge" to="center_east" fromLane="0" toLane="0" dir="s" state="M"/>
+</net>

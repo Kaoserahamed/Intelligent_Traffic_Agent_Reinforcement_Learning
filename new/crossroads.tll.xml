@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tlLogics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tllogic_file.xsd">
+    <tlLogic id="center" type="static" programID="1" offset="0">
+        <!-- North-South green, East-West red -->
+        <phase duration="30" state="GGGrrrrrrrrGGGrrrrrrrrrr"/>
+        
+        <!-- North-South yellow, East-West red -->
+        <phase duration="5" state="yyyrrrrrrrryyyrrrrrrrrrr"/>
+        
+        <!-- North-South red, East-West green -->
+        <phase duration="30" state="rrrGGGGGGGGGrrrGGGGGGGGGG"/>
+        
+        <!-- North-South red, East-West yellow -->
+        <phase duration="5" state="rrryyyyyyyyyrrryyyyyyyyyr"/>
+    </tlLogic>
+</tlLogics>

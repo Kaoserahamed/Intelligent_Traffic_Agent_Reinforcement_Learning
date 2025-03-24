@@ -1,0 +1,20 @@
+Loading net-file from 'intersection.net.xml' ... done (7ms).
+Warning: Unused states in tlLogic 'center', program '1' in phase 0 after tl-index -1
+Loading route-files incrementally from 'traffic_simulation.rou.xml'
+Loading done.
+Simulation ended at time: 0.00.
+Performance:
+ Duration: 259.54s
+ Real time factor: 0
+ UPS: 0.000000
+Vehicles:
+ Inserted: 0
+ Running: 0
+ Waiting: 0
+Statistics (avg of 0):
+ RouteLength: 0.00
+ Speed: 0.00
+ Duration: 0.00
+ WaitingTime: 0.00
+ TimeLoss: 0.00
+ DepartDelay: 0.00

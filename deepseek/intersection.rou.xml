@@ -1,6 +1,9 @@
 <routes>
-    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" maxSpeed="50"/>
-    
+   <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="50" guiShape="passenger" color="1,0,0"/>
+    <vType id="bus" accel="1.2" decel="4.0" sigma="0.5" length="12" minGap="2.5" maxSpeed="30" guiShape="bus" color="0,1,1"/>
+    <vType id="emergency" accel="3.0" decel="6.0" sigma="0.5" length="5" minGap="2.5" maxSpeed="60" guiShape="emergency" color="1,1,1"/>
+    <vType id="truck" accel="1.0" decel="4.0" sigma="0.5" length="15" minGap="2.5" maxSpeed="25" guiShape="truck" color="1,0.5,0"/>
+    <vType id="bike" vClass="motorcycle" accel="2.5" decel="7.0" sigma="0.9" length="2.0" maxSpeed="60" guiShape="motorcycle" color="1,0.5,0"/>
     <!-- Northbound routes -->
     <route id="n_s" edges="3to1 1to5"/>
     <route id="n_w" edges="3to1 1to4"/>
@@ -22,19 +25,19 @@
     <route id="w_s" edges="4to1 1to5"/>
     
     <!-- Traffic flows -->
-    <flow id="north_straight" type="car" route="n_s" begin="0" end="7200" vehsPerHour="400"/>
-    <flow id="north_left" type="car" route="n_w" begin="0" end="7200" vehsPerHour="200"/>
-    <flow id="north_right" type="car" route="n_e" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="north_straight" type="car" route="n_s" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="north_left" type="bus" route="n_w" begin="0" end="7200" vehsPerHour="20"/>
+    <flow id="north_right" type="emergency" route="n_e" begin="0" end="7200" vehsPerHour="20"/>
     
-    <flow id="south_straight" type="car" route="s_n" begin="0" end="7200" vehsPerHour="400"/>
-    <flow id="south_left" type="car" route="s_w" begin="0" end="7200" vehsPerHour="200"/>
-    <flow id="south_right" type="car" route="s_e" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="south_straight" type="truck" route="s_n" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="south_left" type="car" route="s_w" begin="0" end="7200" vehsPerHour="20"/>
+    <flow id="south_right" type="car" route="s_e" begin="0" end="7200" vehsPerHour="20"/>
     
-    <flow id="east_straight" type="car" route="e_w" begin="0" end="7200" vehsPerHour="400"/>
-    <flow id="east_left" type="car" route="e_n" begin="0" end="7200" vehsPerHour="200"/>
-    <flow id="east_right" type="car" route="e_s" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="east_straight" type="bus" route="e_w" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="east_left" type="car" route="e_n" begin="0" end="7200" vehsPerHour="20"/>
+    <flow id="east_right" type="emergency" route="e_s" begin="0" end="7200" vehsPerHour="20"/>
     
-    <flow id="west_straight" type="car" route="w_e" begin="0" end="7200" vehsPerHour="400"/>
-    <flow id="west_left" type="car" route="w_n" begin="0" end="7200" vehsPerHour="200"/>
-    <flow id="west_right" type="car" route="w_s" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="west_straight" type="truck" route="w_e" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="west_left" type="bus" route="w_n" begin="0" end="7200" vehsPerHour="20"/>
+    <flow id="west_right" type="bike" route="w_s" begin="0" end="7200" vehsPerHour="20"/>
 </routes>

@@ -5,7 +5,7 @@
     <delay value="100"/>
     <background backgroundColor="0,80,0" showGrid="false" gridXSize="100.00" gridYSize="100.00"/>
     <edges 
-        laneEdgeMode="1" 
+        laneEdgeMode="0" 
         laneShowBorders="true" 
         showBikeMarkings="true" 
         showLinkDecals="true" 
@@ -14,7 +14,7 @@
         hideConnectors="false" 
         widthExaggeration="1.00" 
         minSize="0.00" 
-        showDirection="false" 
+        showDirection="true" 
         showSublanes="true"
     />
     <vehicles 
@@ -26,7 +26,7 @@
         drawMinGap="false" 
         drawBrakeGap="false" 
         showBTRange="false" 
-        showRouteIndex="false" 
+        showRouteIndex="true" 
         scaleLength="1.00" 
         drawReversed="false" 
         showParkingInfo="false" 
@@ -48,7 +48,7 @@
         internalJunctionName_show="false" 
         internalJunctionName_size="50.00" 
         internalJunctionName_color="0,204,128" 
-        showLane2Lane="false" 
+        showLane2Lane="true" 
         drawShape="true" 
         drawCrossingsAndWalkingareas="true" 
         junctionSize="1.00"

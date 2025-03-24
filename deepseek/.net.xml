@@ -1,0 +1,12 @@
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+    <input>
+        <osm-files value="intersection.osm"/>
+    </input>
+    <output>
+        <output-file value="intersection.net.xml"/>
+    </output>
+    <processing>
+        <lefthand value="true"/>
+        <offset.disable-normalization value="true"/>
+    </processing>
+</configuration>

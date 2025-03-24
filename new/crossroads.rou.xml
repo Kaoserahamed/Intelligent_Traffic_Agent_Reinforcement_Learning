@@ -25,24 +25,26 @@
     
     <!-- Define traffic flow -->
     <!-- Cars -->
-    <flow id="flow_car_north_south" type="car" route="north_to_south" begin="0" end="3600" vehsPerHour="300"/>
-    <flow id="flow_car_south_north" type="car" route="south_to_north" begin="0" end="3600" vehsPerHour="300"/>
-    <flow id="flow_car_east_west" type="car" route="east_to_west" begin="0" end="3600" vehsPerHour="300"/>
-    <flow id="flow_car_west_east" type="car" route="west_to_east" begin="0" end="3600" vehsPerHour="300"/>
+    <flow id="flow_car_north_south" type="car" route="north_to_south" begin="0" end="3600" vehsPerHour="300" departLane="2"/>
+    <flow id="flow_car_south_north" type="car" route="south_to_north" begin="0" end="3600" vehsPerHour="300" departLane="2"/>
+    <flow id="flow_car_east_west" type="car" route="east_to_west" begin="0" end="3600" vehsPerHour="300" departLane="2"/>
+    <flow id="flow_car_west_east" type="car" route="west_to_east" begin="0" end="3600" vehsPerHour="300" departLane="2"/>
+
     
     <!-- Buses -->
-    <flow id="flow_bus_north_south" type="bus" route="north_to_south" begin="0" end="3600" vehsPerHour="30"/>
-    <flow id="flow_bus_south_north" type="bus" route="south_to_north" begin="0" end="3600" vehsPerHour="30"/>
-    <flow id="flow_bus_east_west" type="bus" route="east_to_west" begin="0" end="3600" vehsPerHour="30"/>
-    <flow id="flow_bus_west_east" type="bus" route="west_to_east" begin="0" end="3600" vehsPerHour="30"/>
+    <flow id="flow_bus_north_south" type="bus" route="north_to_south" begin="0" end="3600" vehsPerHour="30" departLane="2"/>
+    <flow id="flow_bus_south_north" type="bus" route="south_to_north" begin="0" end="3600" vehsPerHour="30" departLane="2"/>
+    <flow id="flow_bus_east_west" type="bus" route="east_to_west" begin="0" end="3600" vehsPerHour="30" departLane="2"/>
+    <flow id="flow_bus_west_east" type="bus" route="west_to_east" begin="0" end="3600" vehsPerHour="30" departLane="2"/>
     
     <!-- Trucks -->
-    <flow id="flow_truck_north_south" type="truck" route="north_to_south" begin="0" end="3600" vehsPerHour="50"/>
-    <flow id="flow_truck_east_west" type="truck" route="east_to_west" begin="0" end="3600" vehsPerHour="50"/>
+    <flow id="flow_truck_north_south" type="truck" route="north_to_south" begin="0" end="3600" vehsPerHour="50" departLane="2"/>
+    <flow id="flow_truck_east_west" type="truck" route="east_to_west" begin="0" end="3600" vehsPerHour="50" departLane="2"/>
     
     <!-- Emergency vehicles (occasional) -->
     <vehicle id="emergency_1" type="emergency" route="north_to_south" depart="100"/>
     <vehicle id="emergency_2" type="emergency" route="west_to_east" depart="300"/>
     <vehicle id="emergency_3" type="emergency" route="east_to_west" depart="500"/>
     <vehicle id="emergency_4" type="emergency" route="south_to_north" depart="700"/>
+
 </routes>

@@ -14,6 +14,7 @@ tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
 sys.path.append(tools)
 
 # Construct the netconvert command
+# Construct the netconvert command
 netconvert_cmd = [
     'netconvert',
     '-n', 'crossroads.nod.xml',
@@ -22,6 +23,7 @@ netconvert_cmd = [
     '-t', 'crossroads.tll.xml',
     '-o', 'crossroads.net.xml',
     '--tls.guess', 'true',
+    '--lefthand', 'true',  # Add this line to enable left-hand driving
     '--verbose', 'true'
 ]
 

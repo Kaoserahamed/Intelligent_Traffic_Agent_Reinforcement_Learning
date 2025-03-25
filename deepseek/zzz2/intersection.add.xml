@@ -1,0 +1,35 @@
+<additional>
+    <tlLogic id="1" type="static" programID="1" offset="0">
+        <!-- First phase: North-South green -->
+        <phase duration="42" state="GGgrrrrrrrrr"/>
+        <phase duration="3"  state="yyyrrrrrrrrr"/>
+        <phase duration="3"  state="rrrrrrrrrrrr"/>
+        
+        <!-- Second phase: East-West green -->
+        <phase duration="42" state="rrrGGgrrrrrr"/>
+        <phase duration="3"  state="rrryyyrrrrrr"/>
+        <phase duration="3"  state="rrrrrrrrrrrr"/>
+        
+        <!-- Third phase: Diagonal green (top-left to bottom-right) -->
+        <phase duration="42" state="rrrrrrrGGgrr"/>
+        <phase duration="3"  state="rrrrrryyyrrr"/>
+        <phase duration="3"  state="rrrrrrrrrrrr"/>
+        
+        <!-- Fourth phase: Diagonal green (bottom-left to top-right) -->
+        <phase duration="42" state="rrrrrrrrrGGg"/>
+        <phase duration="3"  state="rrrrrrrrryyy"/>
+        <phase duration="3"  state="rrrrrrrrrrrr"/>
+    </tlLogic>
+</additional>
+<!-- <phase duration="42" state="GGgrrrrrrrrr"/>
+<phase duration="3" state="yyyrrrrrrrrr"/>
+<phase duration="3" state="rrrrrrrrrrrr"/>
+<phase duration="42" state="rrrGGgrrrrrr"/>
+<phase duration="3" state="rrryyyrrrrrr"/>
+<phase duration="3" state="rrrrrrrrrrrr"/>
+<phase duration="42" state="rrrrrrrGGgrr"/>
+<phase duration="3" state="rrrrrryyyrrr"/>
+<phase duration="3" state="rrrrrrrrrrrr"/>
+<phase duration="42" state="rrrrrrrrrGGg"/>
+<phase duration="3" state="rrrrrrrrryyy"/>
+<phase duration="3" state="rrrrrrrrrrrr"/> -->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-03-25 10:55:00 by Eclipse SUMO netconvert Version 1.22.0
+<!-- generated on 2025-03-25 12:09:58 by Eclipse SUMO netconvert Version 1.22.0
 <netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -11,6 +11,10 @@
     <output>
         <output-file value="intersection.net.xml"/>
     </output>
+
+    <building_defaults>
+        <default.speed value="13.89"/>
+    </building_defaults>
 
 </netconvertConfiguration>
 -->

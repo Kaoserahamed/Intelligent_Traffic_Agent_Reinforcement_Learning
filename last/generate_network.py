@@ -1,5 +1,37 @@
 import os
 import subprocess
+import xml.etree.ElementTree as ET
+
+def count_traffic_light_links(net_file):
+    """
+    Parse the network file to count the number of traffic light links
+    """
+    try:
+        tree = ET.parse(net_file)
+        root = tree.getroot()
+        
+        # Find traffic light nodes
+        tl_nodes = [node for node in root.findall('.//node') if node.get('type') == 'traffic_light']
+        
+        if not tl_nodes:
+            print("No traffic light nodes found!")
+            return 0
+        
+        # Assuming the first traffic light node
+        tl_node_id = tl_nodes[0].get('id')
+        
+        # Count total links for this traffic light
+        links = [edge for edge in root.findall('.//edge') 
+                 if edge.get('from') == tl_node_id or edge.get('to') == tl_node_id]
+        
+        num_links = len(links)
+        
+        print(f"Detected {num_links} traffic light links")
+        return num_links
+    
+    except Exception as e:
+        print(f"Error parsing network file: {e}")
+        return 0
 
 def create_nodes_xml():
     nodes_content = """<?xml version="1.0" encoding="UTF-8"?>
@@ -45,9 +77,7 @@ def generate_network():
             "--node-files=nodes.xml", 
             "--edge-files=edges.xml", 
             "--output-file=intersection.net.xml",
-            "--default.lane-width=3.2",
-            "--default.speed=13.89",
-            "--ignore-errors.edge-type"
+            "--default.speed=13.89"
         ], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Network generation error: {e}")
@@ -76,18 +106,27 @@ def create_route_file():
     with open("intersection.rou.xml", "w") as f:
         f.write(routes_content)
 
-def create_additional_file():
-    additional_content = """<?xml version="1.0" encoding="UTF-8"?>
+def create_additional_file(num_links):
+    # Ensure num_links is even and greater than 0
+    if num_links <= 0 or num_links % 2 != 0:
+        print("Invalid number of links for traffic light logic.")
+        return
+    
+    # Calculate the number of connections (each link has 4 connections)
+    num_connections = num_links * 4
+    
+    # Generate state strings
+    half_connections = num_connections // 2
+    green_state = 'GGGG' * (half_connections // 4) + 'rrrr' * (half_connections // 4)
+    yellow_state = 'yyyy' * (num_connections // 4)
+    
+    additional_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
     <tlLogic id="1" type="static" programID="1" offset="0">
-        <phase duration="31" state="GGggrrrrrrrrr"/>
-        <phase duration="6"  state="yyyyyrrrrrrrrr"/>
-        <phase duration="31" state="rrrrGGggrrrrr"/>
-        <phase duration="6"  state="rrrryyyyyrrrrr"/>
-        <phase duration="31" state="rrrrrrrrrGGgg"/>
-        <phase duration="6"  state="rrrrrrrrryyyyy"/>
-        <phase duration="31" state="rrrrrGGggrrrr"/>
-        <phase duration="6"  state="rrrrryyyyyrrr"/>
+        <phase duration="31" state="{green_state}"/>
+        <phase duration="6"  state="{yellow_state}"/>
+        <phase duration="31" state="{green_state[::-1]}"/>
+        <phase duration="6"  state="{yellow_state}"/>
     </tlLogic>
 </additional>
 """
@@ -119,9 +158,18 @@ def create_config_file():
 def main():
     generate_network()
     create_route_file()
-    create_additional_file()
+    
+    # Count links and create additional file
+    num_links = count_traffic_light_links("intersection.net.xml")
+    create_additional_file(num_links)
+    
     create_config_file()
     print("Simulation files generated successfully!")
+    if num_links > 0: # Only create config if additional file was created
+        create_config_file()
+        print("Simulation files generated successfully!")
+    else:
+        print("Simulation file generation aborted due to errors.")
 
 if __name__ == "__main__":
     main()

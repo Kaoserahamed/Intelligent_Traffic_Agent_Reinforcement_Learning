@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-03-22 19:05:40 by Eclipse SUMO sumo Version 1.22.0
+<!-- generated on 2025-03-25 19:33:22 by Eclipse SUMO sumo Version 1.22.0
 <sumoConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
-        <net-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm.net.xml.gz"/>
-        <route-files value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\trips.trips.xml"/>
-        <additional-files value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_stops.add.xml"/>
+        <net-file value="osm.net.xml.gz"/>
+        <route-files value="trips.trips.xml"/>
+        <additional-files value="osm_stops.add.xml"/>
     </input>
 
     <output>
-        <vehroute-output value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\vehroutes.xml"/>
-        <stop-output value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\stopinfos.xml"/>
+        <vehroute-output value="vehroutes.xml"/>
+        <stop-output value="stopinfos.xml"/>
     </output>
 
     <time>
@@ -28,7 +28,7 @@
 
     <report>
         <aggregate-warnings value="5"/>
-        <error-log value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\trips.trips.xml.errorlog"/>
+        <error-log value="trips.trips.xml.errorlog"/>
         <no-step-log value="true"/>
     </report>
 

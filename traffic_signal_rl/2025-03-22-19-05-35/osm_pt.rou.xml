@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-03-22 19:05:40.916083 by osmWebWizard.py v1_22_0+0002-63e50f52594
+<!-- generated on 2025-03-25 19:33:23.089314 by ptlines2flows.py v1_22_0+0002-63e50f52594
 <configuration>
-    <net-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm.net.xml.gz"/>
-    <ptlines-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_ptlines.xml"/>
-    <ptstops-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_stops.add.xml"/>
-    <output-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_pt.rou.xml"/>
-    <stopinfos-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\stopinfos.xml"/>
-    <routes-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\vehroutes.xml"/>
-    <trips-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\trips.trips.xml"/>
+    <net-file value="osm.net.xml.gz"/>
+    <ptlines-file value="osm_ptlines.xml"/>
+    <ptstops-file value="osm_stops.add.xml"/>
+    <output-file value="osm_pt.rou.xml"/>
     <min-stops value="0"/>
     <extend-to-fringe value="True"/>
     <random-begin value="True"/>

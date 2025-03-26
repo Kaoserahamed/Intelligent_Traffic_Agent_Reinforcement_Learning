@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-03-22 19:05:40.408000 by $Id: ptlines2flows.py v1_3_1+0313-ccb31df3eb jakob.erdmann@dlr.de 2019-09-02 13:26:32 +0200 $ v1_22_0+0002-63e50f52594
+<!-- generated on 2025-03-25 19:33:22.680604 by $Id: ptlines2flows.py v1_3_1+0313-ccb31df3eb jakob.erdmann@dlr.de 2019-09-02 13:26:32 +0200 $ v1_22_0+0002-63e50f52594
 <configuration>
-    <net-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm.net.xml.gz"/>
-    <ptlines-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_ptlines.xml"/>
-    <ptstops-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_stops.add.xml"/>
-    <output-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\osm_pt.rou.xml"/>
-    <stopinfos-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\stopinfos.xml"/>
-    <routes-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\vehroutes.xml"/>
-    <trips-file value="E:\AI_Project\AI\traffic_signal_rl\2025-03-22-19-05-35\trips.trips.xml"/>
+    <net-file value="osm.net.xml.gz"/>
+    <ptlines-file value="osm_ptlines.xml"/>
+    <ptstops-file value="osm_stops.add.xml"/>
+    <output-file value="osm_pt.rou.xml"/>
     <min-stops value="0"/>
     <extend-to-fringe value="True"/>
     <random-begin value="True"/>

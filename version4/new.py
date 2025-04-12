@@ -66,9 +66,9 @@ class DQNAgent:
 
 # Traffic Light Simulator
 class TrafficLightSimulator:
-    def __init__(self):
+    def __init__(self, use_gui = True):
         # Initialize SUMO
-        self.sumo_binary = "sumo-gui" if gui else "sumo"
+        self.sumo_binary = "sumo-gui" if use_gui else "sumo"
         self.sumo_cmd = [self.sumo_binary, "-c", "intersection.sumocfg"]
         
         # State and action definitions
@@ -479,7 +479,7 @@ def main():
     gui = True  # Use GUI
     
     # Create simulator
-    simulator = TrafficLightSimulator()
+    simulator = TrafficLightSimulator(gui = gui)
     
     # Create GUI if enabled
     if gui:

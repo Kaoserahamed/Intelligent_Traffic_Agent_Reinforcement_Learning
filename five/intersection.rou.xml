@@ -1,0 +1,93 @@
+<routes>
+    <!-- Define vehicle types -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="16.67" color="1,0,0"/>
+    <vType id="bus" accel="2.0" decel="4.0" sigma="0.5" length="12" minGap="3.0" maxSpeed="12.5" color="0,1,0"/>
+    <vType id="motorcycle" accel="3.0" decel="5.0" sigma="0.5" length="2.5" minGap="1.5" maxSpeed="20.0" color="0,0,1"/>
+
+    <!-- Define routes -->
+    <!-- Routes from North Junction (2) to other destinations -->
+    <route id="north_to_center" edges="e12 e9 e10 e11"/> <!-- North to Center -->
+    <route id="north_to_east" edges="e12 e9 e10 e11 e2 e7 e36"/> <!-- North to Center to East -->
+    <route id="north_to_west" edges="e12 e9 e10 e11 e2 e5 e28"/> <!-- North to Center to West -->
+    <route id="north_to_south" edges="e12 e9 e10 e11 e2 e3 e20"/> <!-- North to Center to South -->
+    
+    <!-- Routes from South Junction (7) to other destinations -->
+    <route id="south_to_center" edges="e20 e17 e18 e19"/> <!-- South to Center -->
+    <route id="south_to_east" edges="e20 e17 e18 e19 e4 e7 e36"/> <!-- South to Center to East -->
+    <route id="south_to_west" edges="e20 e17 e18 e19 e4 e5 e28"/> <!-- South to Center to West -->
+    <route id="south_to_north" edges="e20 e17 e18 e19 e4 e1 e12"/> <!-- South to Center to North -->
+    
+    <!-- Routes from West Junction (12) to other destinations -->
+    <route id="west_to_center" edges="e28 e25 e26 e27"/> <!-- West to Center -->
+    <route id="west_to_north" edges="e28 e25 e26 e27 e6 e1 e12"/> <!-- West to Center to North -->
+    <route id="west_to_south" edges="e28 e25 e26 e27 e6 e3 e20"/> <!-- West to Center to South -->
+    <route id="west_to_east" edges="e28 e25 e26 e27 e6 e7 e36"/> <!-- West to Center to East -->
+    
+    <!-- Routes from East Junction (17) to other destinations -->
+    <route id="east_to_center" edges="e36 e33 e34 e35"/> <!-- East to Center -->
+    <route id="east_to_north" edges="e36 e33 e34 e35 e8 e1 e12"/> <!-- East to Center to North -->
+    <route id="east_to_south" edges="e36 e33 e34 e35 e8 e3 e20"/> <!-- East to Center to South -->
+    <route id="east_to_west" edges="e36 e33 e34 e35 e8 e5 e28"/> <!-- East to Center to West -->
+    
+    <!-- Routes around the outer junctions -->
+    <route id="north_circuit" edges="e9 e10 e15 e16 e13 e14"/> <!-- Around North junction -->
+    <route id="south_circuit" edges="e17 e18 e23 e24 e21 e22"/> <!-- Around South junction -->
+    <route id="west_circuit" edges="e25 e26 e31 e32 e29 e30"/> <!-- Around West junction -->
+    <route id="east_circuit" edges="e33 e34 e39 e40 e37 e38"/> <!-- Around East junction -->
+
+    <!-- Routes through the center junction (1) -->
+    <route id="center_north_to_south" edges="e11 e2 e3 e20"/> <!-- North to South through center -->
+    <route id="center_south_to_north" edges="e19 e4 e1 e12"/> <!-- South to North through center -->
+    <route id="center_west_to_east" edges="e27 e6 e7 e36"/> <!-- West to East through center -->
+    <route id="center_east_to_west" edges="e35 e8 e5 e28"/> <!-- East to West through center -->
+    <route id="center_north_to_east" edges="e11 e2 e7 e36"/> <!-- North to East through center -->
+    <route id="center_north_to_west" edges="e11 e2 e5 e28"/> <!-- North to West through center -->
+    <route id="center_south_to_east" edges="e19 e4 e7 e36"/> <!-- South to East through center -->
+    <route id="center_south_to_west" edges="e19 e4 e5 e28"/> <!-- South to West through center -->
+    <route id="center_west_to_north" edges="e27 e6 e1 e12"/> <!-- West to North through center -->
+    <route id="center_west_to_south" edges="e27 e6 e3 e20"/> <!-- West to South through center -->
+    <route id="center_east_to_north" edges="e35 e8 e1 e12"/> <!-- East to North through center -->
+    <route id="center_east_to_south" edges="e35 e8 e3 e20"/> <!-- East to South through center -->
+
+    <!-- Define flows -->
+    <!-- Flows from North -->
+    <flow id="flow_north_to_center" type="car" route="north_to_center" begin="0" end="3600" vehsPerHour="300"/>
+    <flow id="flow_north_to_east" type="car" route="north_to_east" begin="0" end="3600" vehsPerHour="200"/>
+    <flow id="flow_north_to_west" type="car" route="north_to_west" begin="0" end="3600" vehsPerHour="200"/>
+    <flow id="flow_north_to_south" type="car" route="north_to_south" begin="0" end="3600" vehsPerHour="250"/>
+    <flow id="bus_north_to_center" type="bus" route="north_to_center" begin="0" end="3600" vehsPerHour="30"/>
+    
+    <!-- Flows from South -->
+    <flow id="flow_south_to_center" type="car" route="south_to_center" begin="0" end="3600" vehsPerHour="300"/>
+    <flow id="flow_south_to_east" type="car" route="south_to_east" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_south_to_west" type="car" route="south_to_west" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_south_to_north" type="car" route="south_to_north" begin="0" end="3600" vehsPerHour="220"/>
+    <flow id="motorcycle_south_to_center" type="motorcycle" route="south_to_center" begin="0" end="3600" vehsPerHour="50"/>
+    
+    <!-- Flows from West -->
+    <flow id="flow_west_to_center" type="car" route="west_to_center" begin="0" end="3600" vehsPerHour="280"/>
+    <flow id="flow_west_to_north" type="car" route="west_to_north" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_west_to_south" type="car" route="west_to_south" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_west_to_east" type="car" route="west_to_east" begin="0" end="3600" vehsPerHour="200"/>
+    <flow id="bus_west_to_east" type="bus" route="west_to_east" begin="0" end="3600" vehsPerHour="25"/>
+    
+    <!-- Flows from East -->
+    <flow id="flow_east_to_center" type="car" route="east_to_center" begin="0" end="3600" vehsPerHour="280"/>
+    <flow id="flow_east_to_north" type="car" route="east_to_north" begin="0" end="3600" vehsPerHour="160"/>
+    <flow id="flow_east_to_south" type="car" route="east_to_south" begin="0" end="3600" vehsPerHour="160"/>
+    <flow id="flow_east_to_west" type="car" route="east_to_west" begin="0" end="3600" vehsPerHour="220"/>
+    <flow id="motorcycle_east_to_west" type="motorcycle" route="east_to_west" begin="0" end="3600" vehsPerHour="40"/>
+    
+    <!-- Flows around outer junctions -->
+    <flow id="flow_north_circuit" type="car" route="north_circuit" begin="0" end="3600" vehsPerHour="100"/>
+    <flow id="flow_south_circuit" type="car" route="south_circuit" begin="0" end="3600" vehsPerHour="100"/>
+    <flow id="flow_west_circuit" type="car" route="west_circuit" begin="0" end="3600" vehsPerHour="100"/>
+    <flow id="flow_east_circuit" type="car" route="east_circuit" begin="0" end="3600" vehsPerHour="100"/>
+    <flow id="motorcycle_north_circuit" type="motorcycle" route="north_circuit" begin="0" end="3600" vehsPerHour="30"/>
+    
+    <!-- Flows through center junction -->
+    <flow id="flow_center_north_to_south" type="car" route="center_north_to_south" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_center_south_to_north" type="car" route="center_south_to_north" begin="0" end="3600" vehsPerHour="150"/>
+    <flow id="flow_center_west_to_east" type="car" route="center_west_to_east" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_center_east_to_west" type="car" route="center_east_to_west" begin="0" end="3600" vehsPerHour="180"/>
+</routes>

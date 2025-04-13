@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<viewsettings>
+    <viewport zoom="150" x="200" y="100"/>
+    <delay value="50"/>
+    <scheme name="real world"/>
+    <background backgroundColor="white" showGrid="false" gridXSize="100.00" gridYSize="100.00"/>
+    
+    <edges laneShowBorders="true" showLinkDecals="true" showLinkRules="true" showRails="true" hideConnectors="false" widthExaggeration="1.0" minSize="1.0" laneEdgeMode="0">
+        <colorScheme name="uniform">
+            <entry color="black"/>
+        </colorScheme>
+    </edges>
+    
+    <vehicles vehicleMode="8" vehicleQuality="2" minVehicleSize="1.00" vehicleExaggeration="1.00" showBlinker="true">
+        <colorScheme name="by type" interpolated="1">
+            <entry color="blue" name="passenger_car"/>
+            <entry color="red" name="suv"/>
+            <entry color="green" name="truck"/>
+            <entry color="yellow" name="bus"/>
+            <entry color="magenta" name="motorcycle"/>
+        </colorScheme>
+    </vehicles>
+    
+    <junctions junctionMode="0" drawLinkTLIndex="true" drawLinkJunctionIndex="true" junctionNameView="1">
+        <colorScheme name="uniform">
+            <entry color="102,0,0"/>
+        </colorScheme>
+    </junctions>
+</viewsettings>

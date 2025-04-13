@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="intersection.net.xml"/>
+        <route-files value="intersection.rou.xml"/>
+         <additional-files value="intersection.add.xml"/>
+    </input>
+
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+        <step-length value="0.1"/>
+    </time>
+
+    <processing>
+        <collision.action value="warn"/>
+        <ignore-junction-blocker value="60"/>
+        <time-to-teleport value="300"/>
+        <max-depart-delay value="300"/>
+    </processing>
+
+    <report>
+        <verbose value="true"/>
+        <duration-log.statistics value="true"/>
+        <log value="simulation.log"/>
+    </report>
+
+    <gui_only>
+        <gui-settings-file value="intersection.view.xml"/>
+        <start value="true"/>
+        <quit-on-end value="false"/>
+        <delay value="250"/>
+        <tracker-interval value="0.1"/>
+    </gui_only>
+
+    <output>
+        <tripinfo-output value="tripinfo.xml"/>
+        <summary-output value="summary.xml"/>
+        <statistic-output value="statistics.xml"/>
+    </output>
+
+</configuration>

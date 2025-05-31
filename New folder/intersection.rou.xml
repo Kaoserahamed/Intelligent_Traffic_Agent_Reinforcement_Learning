@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <!-- Vehicle Types with Enhanced Design -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="4.5" minGap="2.5" maxSpeed="2" 
+           guiShape="passenger" color="0.7,0.2,0.2" imgFile="standard/car.png" 
+           width="1.8" carFollowModel="IDM" speedFactor="1.2">
+        <param key="has.railway.device" value="false"/>
+        <param key="has.taxi.device" value="false"/>
+    </vType>
+
+    <vType id="bus" accel="1.2" decel="4.0" sigma="0.5" length="7" minGap="2.5" maxSpeed="3" 
+           guiShape="bus" color="0,0.7,0.7" imgFile="standard/bus.png" 
+           width="2.5" carFollowModel="IDMM" speedFactor="1.0">
+        <param key="has.railway.device" value="false"/>
+        <param key="has.taxi.device" value="false"/>
+    </vType>
+
+    <vType id="emergency" accel="3.0" decel="6.0" sigma="0.5" length="5" minGap="2.5" maxSpeed="4" 
+           guiShape="emergency" color="1,1,1" imgFile="emergency/ambulance.png" 
+           width="2.0" carFollowModel="IDM" speedFactor="1.5">
+        <param key="has.railway.device" value="false"/>
+    </vType>
+
+    <vType id="truck" accel="1.0" decel="4.0" sigma="0.5" length="8" minGap="2.5" maxSpeed="2" 
+           guiShape="truck" color="0.8,0.4,0" imgFile="standard/truck.png" 
+           width="2.6" carFollowModel="IDMM" speedFactor="0.9">
+        <param key="has.railway.device" value="false"/>
+    </vType>
+
+    <vType id="bike" vClass="motorcycle" accel="2.5" decel="7.0" sigma="0.9" length="2.0" maxSpeed="5" 
+           guiShape="motorcycle" color="1,0.5,0" imgFile="standard/motorcycle.png" 
+           width="1.0" carFollowModel="IDM" speedFactor="1.3">
+        <param key="has.railway.device" value="false"/>
+    </vType>
+
+    <!-- Rest of the routes remain the same -->
+    <!--  Northbound routes  -->
+    <route id="n_s" edges="3to1 1to5"/>
+    <route id="n_w" edges="3to1 1to4"/>
+    <route id="n_e" edges="3to1 1to2"/>
+
+    <!--  Southbound routes  -->
+    <route id="s_n" edges="5to1 1to3"/>
+    <route id="s_w" edges="5to1 1to4"/>
+    <route id="s_e" edges="5to1 1to2"/>
+
+    <!--  Eastbound routes  -->
+    <route id="e_w" edges="2to1 1to4"/>
+    <route id="e_n" edges="2to1 1to3"/>
+    <route id="e_s" edges="2to1 1to5"/>
+
+    <!--  Westbound routes  -->
+    <route id="w_e" edges="4to1 1to2"/>
+    <route id="w_n" edges="4to1 1to3"/>
+    <route id="w_s" edges="4to1 1to5"/>
+
+    <!--  Traffic flows  -->
+    <flow id="north_straight" type="car" route="n_s" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="north_left" type="bus" route="n_w" begin="0" end="7200" vehsPerHour="50"/>
+    <flow id="north_right" type="emergency" route="n_e" begin="0" end="7200" vehsPerHour="20"/>
+    <flow id="south_straight" type="truck" route="s_n" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="south_left" type="car" route="s_w" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="south_right" type="car" route="s_e" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="east_straight" type="bus" route="e_w" begin="0" end="7200" vehsPerHour="50"/>
+    <flow id="east_left" type="car" route="e_n" begin="0" end="7200" vehsPerHour="200"/>
+    <flow id="east_right" type="emergency" route="e_s" begin="0" end="7200" vehsPerHour="30"/>
+    <flow id="west_straight" type="truck" route="w_e" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="west_left" type="bus" route="w_n" begin="0" end="7200" vehsPerHour="40"/>
+    <flow id="west_right" type="bike" route="w_s" begin="0" end="7200" vehsPerHour="40"/>
+</routes>

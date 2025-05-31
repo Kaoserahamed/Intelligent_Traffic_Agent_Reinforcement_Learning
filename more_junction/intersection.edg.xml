@@ -1,0 +1,25 @@
+<edges>
+    <!-- Junction 1 incoming edges -->
+    <edge id="2to1" from="2" to="1" numLanes="1" speed="13.89"/>
+    <edge id="3to1" from="3" to="1" numLanes="1" speed="13.89"/>
+    <edge id="4to1" from="4" to="1" numLanes="1" speed="13.89"/>
+
+    <!-- Junction 1 outgoing (opposite) edges -->
+    <edge id="1to2" from="1" to="2" numLanes="1" speed="13.89"/>
+    <edge id="1to3" from="1" to="3" numLanes="1" speed="13.89"/>
+    <edge id="1to4" from="1" to="4" numLanes="1" speed="13.89"/>
+
+    <!-- Connection between junctions -->
+    <edge id="1to5" from="1" to="5" numLanes="1" speed="13.89"/>
+    <edge id="5to1" from="5" to="1" numLanes="1" speed="13.89"/>
+
+    <!-- Junction 2 outgoing edges -->
+    <edge id="5to6" from="5" to="6" numLanes="1" speed="13.89"/>
+    <edge id="7to5" from="7" to="5" numLanes="1" speed="13.89"/>
+    <edge id="8to5" from="8" to="5" numLanes="1" speed="13.89"/>
+
+    <!-- Junction 2 incoming (opposite) edges -->
+    <edge id="6to5" from="6" to="5" numLanes="1" speed="13.89"/>
+    <edge id="5to7" from="5" to="7" numLanes="1" speed="13.89"/>
+    <edge id="5to8" from="5" to="8" numLanes="1" speed="13.89"/>
+</edges>

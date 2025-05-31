@@ -6,7 +6,7 @@ import numpy as np
 
 # Ensure SUMO tools are in the Python path
 if 'SUMO_HOME' in os.environ:
-    tools = os.path.join(os.environ['SUMO_HOME'], 'tools')
+    tools = os.path.join(os.environ['SUMO_HOME'], 'tools') 
     sys.path.append(tools)
 else:
     raise ValueError("SUMO_HOME environment variable not set")
@@ -151,12 +151,12 @@ class SumoTrafficRL:
             print(f"Error setting traffic light phase: {e}")
 
     def run_simulation(self, num_episodes=100, max_steps=3600):
-        sumo_binary = "sumo-gui"  
+        sumo_binary = r"C:\Program Files (x86)\Eclipse\Sumo\bin\sumo-gui.exe"
 
         for episode in range(num_episodes):
             self.current_phase = random.randint(0, len(self.phases) - 1)
             self.current_phase_duration = 0
-
+            
             sumo_cmd = [
                 sumo_binary,
                 "-c", self.sumo_config,

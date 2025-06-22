@@ -1,6 +1,0 @@
-<routes>
-    <!-- Define the vehicle routes -->
-    <vehicle id="car1" type="car" route="1 2" depart="0" />
-    <vehicle id="car2" type="car" route="2 1" depart="5" />
-    <vehicle id="car3" type="car" route="3 4" depart="10" />
-</routes>

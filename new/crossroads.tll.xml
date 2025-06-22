@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<tlLogics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tllogic_file.xsd">
-    <tlLogic id="center" type="static" programID="1" offset="0">
-    <phase duration="30" state="GGGrrrrrrrrrrrrrrrrr"/>  // Prioritize leftmost lanes
-    <phase duration="5" state="yyyrrrrrrrrrrrrrrrrr"/>
-    <phase duration="30" state="rrrrrrrrrGGGrrrrrrrr"/>
-    <phase duration="5" state="rrrrrrrrryyyrrrrrrrr"/>
-</tlLogic>
-</tlLogics>

@@ -296,6 +296,15 @@ class TrafficEnv:
         except:
             return 0
 
+    def get_total_waiting_time(self):
+        """Return total waiting time of all vehicles in the simulation"""
+        try:
+            if self.connection_active:
+                return sum(traci.vehicle.getWaitingTime(v) for v in traci.vehicle.getIDList())
+            return 0.0
+        except:
+            return 0.0
+
     def close(self):
         """Close SUMO simulation"""
         try:

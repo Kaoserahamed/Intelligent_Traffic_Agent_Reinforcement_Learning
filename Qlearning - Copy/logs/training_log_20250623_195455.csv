@@ -1,2 +1,0 @@
-Episode,Duration_Min,Total_Reward,Avg_Queue,Max_Queue,Avg_Waiting_Time,Avg_Speed,Throughput,Phase_Switches,Epsilon,Q_Table_Size
-1,0.14623554547627768,-2218.460568692396,33.9375,53,24.595102050725075,0.8316873492318854,160,64,0.00998645168764533,2338

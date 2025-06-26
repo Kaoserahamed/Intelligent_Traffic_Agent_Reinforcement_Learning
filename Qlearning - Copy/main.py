@@ -1,6 +1,8 @@
 from traffic_env import TrafficEnv
 from q_agent import QLearningAgent
 from dqn_agent import DQNAgent
+from double_dqn_agent import DoubleDQNAgent
+from ppo_agent import PPOAgent
 import numpy as np
 import csv
 import os
@@ -8,46 +10,39 @@ import time
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-# Create directories
-os.makedirs("logs", exist_ok=True)
-os.makedirs("plots", exist_ok=True)
+# Agent configuration
+AGENTS = [
+    # {"name": "Q-Learning", "class": QLearningAgent, "model_path": "logs/Q-Learning/best_q_model.pkl"},
+    # {"name": "DQN", "class": DQNAgent, "model_path": "logs/DQN/best_dqn_model.pth"},
+    # {"name": "DoubleDQN", "class": DoubleDQNAgent, "model_path": "logs/DoubleDQN/best_double_dqn_model.pth"},
+    {"name": "PPO", "class": PPOAgent, "model_path": "logs/PPO/best_ppo_model.pth", "is_ppo": True}
+]
 
 # Training configuration
 CONFIG = {
-    'EPISODES': 200,
+    'EPISODES': 1000,
     'USE_GUI': False,
-    'MAX_STEPS_PER_EPISODE': 3600,
+    'MAX_STEPS_PER_EPISODE': 5000,
     'SAVE_INTERVAL': 25,
-    'EVALUATION_INTERVAL': 50,
-    'EARLY_STOPPING_PATIENCE': 50,  
+    'EARLY_STOPPING_PATIENCE': 100,
 }
 
-# Agent selection setup
-AGENTS = [
-    {"name": "Q-Learning", "class": QLearningAgent, "model_path": "logs/best_q_model.pkl"},
-    {"name": "DQN", "class": DQNAgent, "model_path": "logs/best_dqn_model.pth"},
-]
-SELECTED_AGENT_INDEX = 1  # Change to 1 to use DQNAgent
-
-
-def create_training_log():
+def create_training_log(log_dir, agent_name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = f"logs/training_log_{timestamp}.csv"
+    log_file = f"{log_dir}/training_log_{agent_name}_{timestamp}.csv"
     with open(log_file, "w", newline='') as file:
         writer = csv.writer(file)
         writer.writerow([
-            "Episode", "Duration_Min", "Total_Reward", "Avg_Queue", 
+            "Episode", "Duration_Min", "Total_Reward", "Avg_Queue",
             "Max_Queue", "Avg_Waiting_Time", "Avg_Speed", "Throughput",
             "Phase_Switches", "Epsilon", "Q_Table_Size"
         ])
     return log_file
 
-
 def safe_mean(values, default=0):
     return np.mean(values) if values else default
 
-
-def plot_training_progress(performance_history, save_path="plots/training_progress.png"):
+def plot_training_progress(performance_history, save_path):
     if len(performance_history) < 5:
         return
     try:
@@ -58,41 +53,22 @@ def plot_training_progress(performance_history, save_path="plots/training_progre
 
         fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 12))
 
-        ax1.plot(episodes, rewards, 'b-', alpha=0.7, label='Episode Reward')
-        if len(rewards) >= 10:
-            window = min(10, len(rewards) // 2)
-            moving_avg = np.convolve(rewards, np.ones(window)/window, mode='valid')
-            moving_episodes = episodes[window-1:]
-            ax1.plot(moving_episodes, moving_avg, 'r-', linewidth=2, label=f'{window}-Episode Average')
-        ax1.set_title('Training Progress: Rewards')
-        ax1.set_xlabel('Episode')
-        ax1.set_ylabel('Total Reward')
-        ax1.legend()
-        ax1.grid(True)
+        def plot_metric(ax, values, label, color, ylabel):
+            ax.plot(episodes, values, color+'-', alpha=0.7, label=label)
+            if len(values) >= 10:
+                window = min(10, len(values) // 2)
+                moving_avg = np.convolve(values, np.ones(window)/window, mode='valid')
+                moving_episodes = episodes[window-1:]
+                ax.plot(moving_episodes, moving_avg, 'r-', linewidth=2, label=f'{window}-Episode Avg')
+            ax.set_title(f'Training Progress: {label}')
+            ax.set_xlabel('Episode')
+            ax.set_ylabel(ylabel)
+            ax.legend()
+            ax.grid(True)
 
-        ax2.plot(episodes, queues, 'g-', alpha=0.7, label='Avg Queue Length')
-        if len(queues) >= 10:
-            window = min(10, len(queues) // 2)
-            moving_avg = np.convolve(queues, np.ones(window)/window, mode='valid')
-            moving_episodes = episodes[window-1:]
-            ax2.plot(moving_episodes, moving_avg, 'r-', linewidth=2, label=f'{window}-Episode Average')
-        ax2.set_title('Training Progress: Queue Lengths')
-        ax2.set_xlabel('Episode')
-        ax2.set_ylabel('Average Queue Length')
-        ax2.legend()
-        ax2.grid(True)
-
-        ax3.plot(episodes, waitings, 'm-', alpha=0.7, label='Avg Waiting Time (s)')
-        if len(waitings) >= 10:
-            window = min(10, len(waitings) // 2)
-            moving_avg = np.convolve(waitings, np.ones(window)/window, mode='valid')
-            moving_episodes = episodes[window-1:]
-            ax3.plot(moving_episodes, moving_avg, 'r-', linewidth=2, label=f'{window}-Episode Average')
-        ax3.set_title('Training Progress: Waiting Time')
-        ax3.set_xlabel('Episode')
-        ax3.set_ylabel('Average Waiting Time (s)')
-        ax3.legend()
-        ax3.grid(True)
+        plot_metric(ax1, rewards, 'Episode Reward', 'b', 'Total Reward')
+        plot_metric(ax2, queues, 'Avg Queue Length', 'g', 'Average Queue Length')
+        plot_metric(ax3, waitings, 'Avg Waiting Time (s)', 'm', 'Average Waiting Time (s)')
 
         plt.tight_layout()
         plt.savefig(save_path, dpi=150, bbox_inches='tight')
@@ -100,172 +76,124 @@ def plot_training_progress(performance_history, save_path="plots/training_progre
     except Exception as e:
         print(f"Error creating plot: {e}")
 
+def train_agent(selected):
+    AGENT_NAME = selected["name"].replace(" ", "_")
+    LOG_DIR = f"logs/{AGENT_NAME}"
+    PLOT_DIR = f"plots/{AGENT_NAME}"
+    os.makedirs(LOG_DIR, exist_ok=True)
+    os.makedirs(PLOT_DIR, exist_ok=True)
 
-# rest of the code remains unchanged
-
-
-def main():
     print("="*80)
-    print("🚦 ENHANCED TRAFFIC LIGHT CONTROL TRAINING")
+    print(f"🚦 TRAINING AGENT: {selected['name']}")
     print("="*80)
 
-    for key, value in CONFIG.items():
-        print(f"   {key}: {value}")
-    print("-"*80)
+    env = TrafficEnv("intersection.sumocfg", max_steps=CONFIG['MAX_STEPS_PER_EPISODE'], gui=CONFIG['USE_GUI'])
+    state = env.reset()
+    if state is None:
+        print("❌ Failed to initialize environment")
+        return
 
-    # Select agent class and model path
-    selected = AGENTS[SELECTED_AGENT_INDEX]
-    AgentClass = selected["class"]
-    model_path = selected["model_path"]
-    print(f"🤖 Selected Agent: {selected['name']}")
+    agent = selected["class"](state_size=len(state), action_size=4)
 
-    env = TrafficEnv("intersection.sumocfg", 
-                     max_steps=CONFIG['MAX_STEPS_PER_EPISODE'], 
-                     gui=CONFIG['USE_GUI'])
-    agent = AgentClass(state_size=8, action_size=2)
+    if os.path.exists(selected["model_path"]):
+        agent.load_model(selected["model_path"])
 
-    if os.path.exists(model_path):
-        agent.load_model(model_path)
-
-    log_file = create_training_log()
-    print(f"📝 Logging to: {log_file}")
-
+    log_file = create_training_log(LOG_DIR, AGENT_NAME)
     performance_history = []
     best_reward = float('-inf')
     no_improvement_count = 0
-    training_start_time = time.time()
 
-    try:
-        with open(log_file, "a", newline='') as file:
-            writer = csv.writer(file)
+    with open(log_file, "a", newline='') as file:
+        writer = csv.writer(file)
 
-            for episode in range(CONFIG['EPISODES']):
-                episode_start_time = time.time()
-                print(f"\n{'='*15} EPISODE {episode + 1}/{CONFIG['EPISODES']} {'='*15}")
+        for episode in range(CONFIG['EPISODES']):
+            print(f"\n{'='*15} EPISODE {episode + 1}/{CONFIG['EPISODES']} {'='*15}")
+            state = env.reset()
+            if state is None:
+                print("❌ Failed to reset environment")
+                continue
 
-                try:
-                    state = env.reset()
-                    if state is None:
-                        print("❌ Failed to reset environment")
-                        continue
+            episode_reward = 0
+            phase_switches = 0
+            metrics_history = []
 
-                    total_reward = 0
-                    step_count = 0
-                    phase_switches = 0
-                    metrics_history = []
+            done = False
+            while not done:
+                if selected.get("is_ppo"):
+                    action, log_prob, value = agent.choose_action(state)
+                else:
+                    action = agent.choose_action(state)
 
-                    for step in range(200):
-                        action = agent.choose_action(state)
-                        old_phase = env.current_phase
-                        next_state, reward, done = env.step(action)
-                        if env.current_phase != old_phase:
-                            phase_switches += 1
+                old_phase = env.current_phase
+                next_state, reward, done = env.step(action)
 
-                        agent.learn(state, action, reward, next_state, done)
+                if env.current_phase != old_phase:
+                    phase_switches += 1
 
-                        metrics = env.get_traffic_metrics()
-                        metrics_history.append(metrics)
+                metrics = env.get_traffic_metrics()
+                metrics_history.append(metrics)
 
-                        state = next_state
-                        total_reward += reward
-                        step_count += 1
+                if selected.get("is_ppo"):
+                    agent.store_transition(state, action, reward, next_state, done, log_prob, value)
+                else:
+                    agent.learn(state, action, reward, next_state, done)
 
-                        if step % 50 == 0:
-                            print(f"   Step {step}: Reward={reward:.1f}, Queue={metrics['total_queue']}, "
-                                  f"Speed={metrics['avg_speed']:.1f}, Vehicles={metrics['total_vehicles']}")
+                state = next_state
+                episode_reward += reward
 
-                        if done:
-                            break
+            if selected.get("is_ppo"):
+                agent.update()
 
-                    episode_duration = (time.time() - episode_start_time) / 60
-                    avg_queue = safe_mean([m['total_queue'] for m in metrics_history])
-                    max_queue = max([m['total_queue'] for m in metrics_history], default=0)
-                    avg_waiting = safe_mean([m['avg_waiting_time'] for m in metrics_history])
-                    avg_speed = safe_mean([m['avg_speed'] for m in metrics_history])
-                    throughput = max([m['throughput'] for m in metrics_history], default=0)
-                    agent_stats = agent.get_stats()
+            # Stats and logging
+            avg_queue = safe_mean([m['total_queue'] for m in metrics_history])
+            max_queue = max([m['total_queue'] for m in metrics_history], default=0)
+            avg_waiting = safe_mean([m['avg_waiting_time'] for m in metrics_history])
+            avg_speed = safe_mean([m['avg_speed'] for m in metrics_history])
+            throughput = max([m['throughput'] for m in metrics_history], default=0)
+            episode_duration = CONFIG['MAX_STEPS_PER_EPISODE'] / 60
 
-                    print(f"\n📊 EPISODE {episode + 1} RESULTS:")
-                    print(f"   Duration: {episode_duration:.1f} min")
-                    print(f"   Total Reward: {total_reward:.2f}")
-                    print(f"   Steps: {step_count}")
-                    print(f"   Avg Queue: {avg_queue:.2f}")
-                    print(f"   Max Queue: {max_queue}")
-                    print(f"   Avg Waiting: {avg_waiting:.1f}s")
-                    print(f"   Avg Speed: {avg_speed:.2f} m/s")
-                    print(f"   Throughput: {throughput}")
-                    print(f"   Phase Switches: {phase_switches}")
-                    print(f"   Epsilon: {agent.epsilon:.4f}")
-                    print(f"   Q-States: {agent_stats['q_table_size']}")
+            print(f"   Reward: {episode_reward:.2f}, Avg Queue: {avg_queue:.2f}, Waiting: {avg_waiting:.2f}s")
 
-                    if total_reward > best_reward:
-                        best_reward = total_reward
-                        no_improvement_count = 0
-                        agent.save_model(model_path)
-                        print(f"   🎉 NEW BEST! Saved model.")
-                    else:
-                        no_improvement_count += 1
+            if episode_reward > best_reward:
+                best_reward = episode_reward
+                no_improvement_count = 0
+                agent.save_model(selected["model_path"])
+                print("   🎉 NEW BEST MODEL SAVED")
+            else:
+                no_improvement_count += 1
 
-                    performance_data = {
-                        'episode': episode + 1,
-                        'reward': total_reward,
-                        'avg_queue': avg_queue,
-                        'avg_waiting': avg_waiting,
-                        'throughput': throughput
-                    }
-                    performance_history.append(performance_data)
+            stats = agent.get_stats() if not selected.get("is_ppo") else {'q_table_size': '-'}
 
-                    writer.writerow([
-                        episode + 1, episode_duration, total_reward, avg_queue, max_queue,
-                        avg_waiting, avg_speed, throughput, phase_switches,
-                        agent.epsilon, agent_stats['q_table_size']
-                    ])
+            writer.writerow([
+                episode + 1, episode_duration, episode_reward, avg_queue, max_queue,
+                avg_waiting, avg_speed, throughput, phase_switches,
+                getattr(agent, 'epsilon', '-'), stats['q_table_size']
+            ])
 
-                    if (episode + 1) % CONFIG['SAVE_INTERVAL'] == 0:
-                        checkpoint_path = f"logs/checkpoint_ep{episode + 1}.pkl"
-                        agent.save_model(checkpoint_path)
-                        plot_training_progress(performance_history)
-                        print(f"   💾 Checkpoint and plot saved")
+            performance_history.append({
+                'episode': episode + 1,
+                'reward': episode_reward,
+                'avg_queue': avg_queue,
+                'avg_waiting': avg_waiting,
+                'throughput': throughput
+            })
 
-                    if CONFIG['EARLY_STOPPING_PATIENCE'] is not None and no_improvement_count >= CONFIG['EARLY_STOPPING_PATIENCE']:
-                        print(f"\n⏹️ Early stopping after {no_improvement_count} episodes without improvement")
-                        break
+            if (episode + 1) % CONFIG['SAVE_INTERVAL'] == 0:
+                plot_training_progress(performance_history, save_path=f"{PLOT_DIR}/training_progress.png")
 
-                except Exception as e:
-                    print(f"❌ Episode {episode + 1} error: {e}")
-                    continue
-                finally:
-                    env.close()
-                    time.sleep(0.1)
+            if CONFIG['EARLY_STOPPING_PATIENCE'] and no_improvement_count >= CONFIG['EARLY_STOPPING_PATIENCE']:
+                print("⏹️ Early stopping: No improvement")
+                break
 
-    except KeyboardInterrupt:
-        print("\n⏹️ Training interrupted by user")
-    except Exception as e:
-        print(f"❌ Training error: {e}")
-    finally:
-        env.close()
+            env.close()
+            time.sleep(0.1)
 
-    total_time = (time.time() - training_start_time) / 3600
+    print(f"🏁 Training complete for {selected['name']}")
+    plot_training_progress(performance_history, f"{PLOT_DIR}/final_training_progress.png")
 
-    print("\n" + "="*80)
-    print("🏁 TRAINING COMPLETED!")
-    print("="*80)
-
-    if performance_history:
-        print(f"📊 FINAL STATISTICS:")
-        print(f"   Episodes: {len(performance_history)}")
-        print(f"   Training time: {total_time:.2f} hours")
-        print(f"   Best reward: {best_reward:.2f}")
-        print(f"   Final epsilon: {agent.epsilon:.4f}")
-        print(f"   States learned: {agent.get_stats()['q_table_size']}")
-        plot_training_progress(performance_history, "plots/final_training_progress.png")
-        final_model_path = f"logs/final_model_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl"
-        agent.save_model(final_model_path)
-        print(f"\n💾 FILES SAVED:")
-        print(f"   Best model: {model_path}")
-        print(f"   Final model: {final_model_path}")
-        print(f"   Training log: {log_file}")
-        print(f"   Training plots: plots/")
+def main():
+    for agent_config in AGENTS:
+        train_agent(agent_config)
 
 if __name__ == "__main__":
     main()

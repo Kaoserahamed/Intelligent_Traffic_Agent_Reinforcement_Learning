@@ -10,7 +10,7 @@ import torch.nn.functional as F
 
 class DQN(nn.Module):
     """Deep Q-Network architecture"""
-    def __init__(self, state_size=8, action_size=2, hidden_size=128):
+    def __init__(self, state_size=28, action_size=4, hidden_size=128):
         super(DQN, self).__init__()
         self.fc1 = nn.Linear(state_size, hidden_size)
         self.fc2 = nn.Linear(hidden_size, hidden_size)
@@ -45,7 +45,7 @@ class ReplayBuffer:
 
 class DQNAgent:
     """DQN Agent for Traffic Light Control"""
-    def __init__(self, state_size=8, action_size=2, lr=0.001, gamma=0.95, 
+    def __init__(self, state_size=28, action_size=4, lr=0.001, gamma=0.95, 
                  epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.01,
                  batch_size=32, buffer_size=10000, target_update=100):
         

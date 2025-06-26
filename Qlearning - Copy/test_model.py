@@ -1,12 +1,13 @@
 # test_model.py
 from traffic_env import TrafficEnv
 from q_agent import QLearningAgent
+from dqn_agent import DQNAgent
 import numpy as np
 import csv
 import os
 import time
 
-def test_trained_model(model_path="logs/trained_model.pkl", test_episodes=10, gui=True):
+def test_trained_model(model_path="logs/best_dqn_model.pth", test_episodes=3, gui=True):
     """Test the trained Q-learning model"""
     
     print("="*80)
@@ -15,8 +16,7 @@ def test_trained_model(model_path="logs/trained_model.pkl", test_episodes=10, gu
     
     # Initialize environment and agent
     env = TrafficEnv("intersection.sumocfg", gui=gui)
-    agent = QLearningAgent(state_size=4, action_size=2)
-    
+    agent = DQNAgent(state_size=28, action_size=4)    
     # Load the trained model
     try:
         agent.load_model(model_path)
@@ -158,7 +158,7 @@ def test_trained_model(model_path="logs/trained_model.pkl", test_episodes=10, gu
 if __name__ == "__main__":
     # Test the model
     results = test_trained_model(
-        model_path="logs/trained_model.pkl",
+        model_path="logs/best_dqn_model.pth",
         test_episodes=5,  # Adjust as needed
         gui=True  # Set to False for faster testing
     )

@@ -12,15 +12,15 @@ from datetime import datetime
 
 # Agent configuration
 AGENTS = [
-    # {"name": "Q-Learning", "class": QLearningAgent, "model_path": "logs/Q-Learning/best_q_model.pkl"},
-    # {"name": "DQN", "class": DQNAgent, "model_path": "logs/DQN/best_dqn_model.pth"},
-    # {"name": "DoubleDQN", "class": DoubleDQNAgent, "model_path": "logs/DoubleDQN/best_double_dqn_model.pth"},
+    {"name": "Q-Learning", "class": QLearningAgent, "model_path": "logs/Q-Learning/best_q_model.pkl"},
+    {"name": "DQN", "class": DQNAgent, "model_path": "logs/DQN/best_dqn_model.pth"},
+    {"name": "DoubleDQN", "class": DoubleDQNAgent, "model_path": "logs/DoubleDQN/best_double_dqn_model.pth"},
     {"name": "PPO", "class": PPOAgent, "model_path": "logs/PPO/best_ppo_model.pth", "is_ppo": True}
 ]
 
 # Training configuration
 CONFIG = {
-    'EPISODES': 1000,
+    'EPISODES': 200,
     'USE_GUI': False,
     'MAX_STEPS_PER_EPISODE': 5000,
     'SAVE_INTERVAL': 25,

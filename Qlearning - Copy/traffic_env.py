@@ -32,7 +32,7 @@ class TrafficEnv:
             "--quit-on-end",
             "--step-length", "1.0",
             "--time-to-teleport", "300",
-            "--random",
+            # "--random",
             "--end", str(max_steps),
         ]
         self.connection_active = False
@@ -66,7 +66,7 @@ class TrafficEnv:
                 self.steps += 1
                 self.current_phase_duration += 1
 
-            self._spawn_random_vehicles(num=random.randint(10, 50))
+            # self._spawn_random_vehicles(num=random.randint(10, 50))
 
             self.initial_vehicles = self.get_total_vehicles()
             return self.get_state()

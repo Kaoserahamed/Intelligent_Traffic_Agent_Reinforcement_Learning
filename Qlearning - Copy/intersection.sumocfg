@@ -2,7 +2,7 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
     <input>
         <net-file value="intersection.net.xml"/>
-        <route-files value="intersection2.rou.xml"/>
+        <route-files value="intersection.rou.xml"/>
         <additional-files value="intersection.add.xml"/>
     </input>
 

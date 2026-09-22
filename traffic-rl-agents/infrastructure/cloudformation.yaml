@@ -1,0 +1,186 @@
+﻿AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  TrafficRL core infrastructure: ECR repository, S3 artifact bucket,
+  IAM roles for SageMaker and GitHub OIDC.
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, staging, prod]
+    Description: Deployment environment.
+  BucketName:
+    Type: String
+    Default: ""
+    Description: Optional custom S3 bucket name (auto-generated if empty).
+  GithubOrg:
+    Type: String
+    Default: Kaoserahamed
+    Description: GitHub organization for OIDC trust.
+  GithubRepo:
+    Type: String
+    Default: AI
+    Description: GitHub repository name for OIDC trust.
+
+Conditions:
+  UseDefaultBucket: !Equals [!Ref BucketName, ""]
+
+Resources:
+  # S3: Artifact & data bucket
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionConfiguration:
+              - ApplyServerSideEncryptionByDefault:
+                  SSEAlgorithm: aws:kms
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicAccess: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireOldArtifacts
+            Status: Enabled
+            ExpirationInDays: 90
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 3
+      Tags:
+        - Key: Project
+          Value: TrafficRL
+        - Key: Environment
+          Value: !Ref Environment
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ArtifactBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !Sub "${ArtifactBucket.Arn}"
+              - !Sub "${ArtifactBucket.Arn}/*"
+
+  # ECR: Container registry
+  EcrRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: traffic-rl
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Action:
+              - "ecr:GetAuthorizationToken"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+      Tags:
+        - Key: Project
+          Value: TrafficRL
+        - Key: Environment
+          Value: !Ref Environment
+
+  # IAM: OIDC provider for GitHub Actions
+  GithubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab8ee0e11c3e3
+
+  GithubOidcRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "traffic-rl-github-oidc-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com"
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringLike:
+                "token.actions.githubusercontent.com:sub": !Sub "repo:${GithubOrg}/${GithubRepo}:*"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPowerUser
+        - arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+      Policies:
+        - PolicyName: traffic-rl-secrets
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                  - secretsmanager:ListSecrets
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                  - ssm:GetParametersByPath
+                Resource: "*"
+
+  # IAM: SageMaker execution role
+  SageMakerExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "traffic-rl-sagemaker-exec-${Environment}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Action: sts:AssumeRole
+      Path: "/"
+      ManagedPolicyArn: arn:aws:iam::aws:policy/AmazonSageMakerFullAccess
+      Policies:
+        - PolicyName: traffic-rl-s3-access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:GetObject"
+                  - "s3:PutObject"
+                  - "s3:ListBucket"
+                Resource:
+                  - !Sub "${ArtifactBucket.Arn}"
+                  - !Sub "${ArtifactBucket.Arn}/*"
+
+Outputs:
+  ArtifactBucketName:
+    Description: S3 artifact bucket name.
+    Value: !Ref ArtifactBucket
+    Export:
+      Name: !Sub "traffic-rl-artifact-bucket-${Environment}"
+  EcrRepositoryUri:
+    Description: ECR repository URI.
+    Value: !GetAtt EcrRepository.RepositoryUri
+    Export:
+      Name: !Sub "traffic-rl-ecr-${Environment}"
+  SageMakerRoleArn:
+    Description: SageMaker execution role ARN.
+    Value: !GetAtt SageMakerExecutionRole.Arn
+    Export:
+      Name: !Sub "traffic-rl-sagemaker-role-${Environment}"
+  GithubOidcRoleArn:
+    Description: GitHub OIDC role ARN for CI/CD.
+    Value: !GetAtt GithubOidcRole.Arn
+    Export:
+      Name: !Sub "traffic-rl-oidc-role-${Environment}"

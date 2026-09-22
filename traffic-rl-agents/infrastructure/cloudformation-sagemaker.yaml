@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  TrafficRL SageMaker resources: training job, HPO tuning, model registry,
+  endpoint configuration, and CloudWatch log groups.
+
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    AllowedValues: [dev, staging, prod]
+    Description: Deployment environment.
+  EcrImageUri:
+    Type: String
+    Description: ECR image URI for the TrafficRL container.
+  S3ArtifactBucket:
+    Type: String
+    Description: S3 bucket for model artifacts and outputs.
+  SageMakerRoleArn:
+    Type: String
+    Description: IAM role for SageMaker execution.
+  InstanceType:
+    Type: String
+    Default: ml.g5.2xlarge
+    Description: SageMaker training instance type.
+  UseSpot:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+    Description: Whether to use managed spot training.
+
+Resources:
+  # --------------------------------------------------------------------------- #
+  # CloudWatch Log Group                                                        #
+  # --------------------------------------------------------------------------- #
+  TrainingLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/traffic-rl/${Environment}/training"
+      RetentionInDays: 14
+
+  # --------------------------------------------------------------------------- #
+  # SageMaker Model Package Group (for model registry)                          #
+  # --------------------------------------------------------------------------- #
+  ModelPackageGroup:
+    Type: AWS::SageMaker::ModelPackageGroup
+    Properties:
+      ModelPackageGroupName: !Sub "traffic-rl-models-${Environment}"
+      ModelPackageGroupDescription: TrafficRL model registry package group
+      ModelPackageGroupPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sagemaker.amazonaws.com
+            Action: sagemaker:CreateModelPackage
+            Resource: !Sub "arn:${AWS::Partition}:sagemaker:*:${AWS::AccountId}:model-package-group/${ModelPackageGroup}"
+
+  # --------------------------------------------------------------------------- #
+  # SageMaker Endpoint                                                          #
+  # --------------------------------------------------------------------------- #
+  EndpointConfig:
+    Type: AWS::SageMaker::Model
+    Properties:
+      ModelName: !Sub "traffic-rl-policy-${Environment}"
+      PrimaryContainer:
+        Image: !Ref EcrImageUri
+        Mode: SingleModel
+      ExecutionRoleArn: !Ref SageMakerRoleArn
+
+  Endpoint:
+    Type: AWS::SageMaker::EndpointConfig
+    Properties:
+      EndpointConfigName: !Sub "traffic-rl-endpoint-${Environment}"
+      ProductionVariants:
+        - InitialInstanceCount: 1
+          InstanceType: ml.g4dn.xlarge
+          ModelName: !Ref EndpointConfig
+          VariantName: AllTraffic
+
+  EndpointResource:
+    Type: AWS::SageMaker::Endpoint
+    Properties:
+      EndpointName: !Sub "traffic-rl-policy-${Environment}"
+      EndpointConfigName: !Ref Endpoint
+
+Outputs:
+  ModelPackageGroup:
+    Description: SageMaker model package group name.
+    Value: !Ref ModelPackageGroup
+  EndpointName:
+    Description: SageMaker endpoint name.
+    Value: !Ref EndpointResource
+  TrainingLogGroup:
+    Description: CloudWatch log group for training.
+    Value: !Ref TrainingLogGroup

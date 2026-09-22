@@ -11,7 +11,7 @@ from typing import Any
 
 import numpy as np
 
-from traffic_rl.agents.base import BaseAgent, State, Action
+from traffic_rl.agents.base import Action, BaseAgent, State
 from traffic_rl.config import ACTION_SIZE
 from traffic_rl.io_utils import load_q_table, save_q_table
 from traffic_rl.logging import get_logger

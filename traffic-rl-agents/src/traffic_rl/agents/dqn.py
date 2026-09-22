@@ -6,15 +6,15 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import torch
 import torch.nn as nn
-import torch.nn.functional as F
+import torch.nn.functional as F  # noqa: N812 - conventional torch alias
 import torch.optim as optim
 
 from traffic_rl.agents.base import NeuralAgent
 from traffic_rl.config import ACTION_SIZE, STATE_SIZE
 from traffic_rl.logging import get_logger
 from traffic_rl.utils.replay import ReplayBuffer
-from traffic_rl.utils.torch import default_device
 
 log = get_logger("traffic_rl.agents.dqn")
 

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import math
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +13,6 @@ import torch.optim as optim
 from traffic_rl.agents.base import NeuralAgent
 from traffic_rl.config import ACTION_SIZE, STATE_SIZE
 from traffic_rl.logging import get_logger
-from traffic_rl.utils.torch import default_device
 
 log = get_logger("traffic_rl.agents.ppo")
 
@@ -177,83 +175,4 @@ class PPOAgent(NeuralAgent):
         self._optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
         self._t = checkpoint.get("t", 0)
         log.info("loaded PPO model from %s", path)
-
-    def save(self, path: Path) -> None:
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        torch.save({
-            "model_state_dict": self._model.state_dict(),
-            "optimizer_state_dict": self._optimizer.state_dict(),
-            "hyperparams": {"lr": self._lr, "gamma": self._gamma,
-                           "clip_epsilon": self._clip_epsilon},
-            "t": self._t,
-        }, str(path))
-
-    def load(self, path: Path) -> None:
-        path = Path(path)
-        if not path.exists():
-            raise FileNotFoundError(f"Model not found: {path}")
-        checkpoint = torch.load(str(path), map_location=self._device,
-                                weights_only=True)
-        self._model.load_state_dict(checkpoint["model_state_dict"])
-        self._optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-        self._t = checkpoint.get("t", 0)
-        log.info("loaded PPO model from %s", path)
-        states = np.stack(self._episode_states)
-        actions = np.array(self._episode_actions)
-        old_log_probs = np.array(self._episode_log_probs)
-        rewards = np.array(self._episode_rewards)
-        dones = np.array(self._episode_done, dtype=np.float32)
-
-        rewards_to_go = np.zeros_like(rewards)
-        running = 0.0
-        for t in reversed(range(len(rewards))):
-            running = rewards[t] + self._gamma * running * (1 - dones[t])
-            rewards_to_go[t] = running
-
-        advantages = rewards_to_go - np.mean(rewards_to_go)
-        if np.std(advantages) > 0:
-            advantages = advantages / np.std(advantages)
-
-        states_t = torch.from_numpy(states).float().to(self._device)
-        actions_t = torch.from_numpy(actions).long().to(self._device)
-        old_log_probs_t = torch.from_numpy(old_log_probs).float().to(self._device)
-        advantages_t = torch.from_numpy(advantages).float().to(self._device)
-        returns_t = torch.from_numpy(rewards_to_go).float().to(self._device)
-
-        n = len(states)
-        indices = np.arange(n)
-        for _ in range(self._ppo_epochs):
-            np.random.shuffle(indices)
-            for start in range(0, n, self._batch_size):
-                end = min(start + self._batch_size, n)
-                bidx = indices[start:end]
-                bs = states_t[bidx]
-                ba = actions_t[bidx]
-                blp = old_log_probs_t[bidx]
-                badv = advantages_t[bidx]
-                bret = returns_t[bidx]
-
-                logits, values = self._model(bs)
-                d = torch.distributions.Categorical(logits=logits)
-                new_log_probs = d.log_prob(ba)
-                entropy = d.entropy().mean()
-
-                ratio = torch.exp(new_log_probs - blp)
-                surr1 = ratio * badv
-                surr2 = torch.clamp(ratio, 1 - self._clip_epsilon,
-                                   1 + self._clip_epsilon) * badv
-                policy_loss = -torch.min(surr1, surr2).mean()
-                value_loss = nn.functional.mse_loss(values.squeeze(), bret)
-
-                loss = (policy_loss +
-                        self._value_coef * value_loss -
-                        self._entropy_coef * entropy)
-
-                self._optimizer.zero_grad()
-                loss.backward()
-                torch.nn.utils.clip_grad_norm_(self._model.parameters(), max_norm=0.5)
-                self._optimizer.step()
-
-        self._t += 1
 

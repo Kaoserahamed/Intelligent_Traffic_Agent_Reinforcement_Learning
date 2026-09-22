@@ -1,7 +1,7 @@
 """Policy/value network for PPO."""
 
-import torch.nn as nn
 import torch
+import torch.nn as nn
 
 
 class _PolicyValueNet(nn.Module):

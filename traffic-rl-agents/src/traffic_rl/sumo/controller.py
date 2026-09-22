@@ -8,12 +8,12 @@ real ``traci`` adapter.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Callable, Mapping, Optional
 
 import numpy as np
 
-from traffic_rl.config import DEFAULT_TIME_ALLOCATIONS, GREEN_PHASES, INCOMING_EDGES, VEHICLE_TYPES
+from traffic_rl.config import DEFAULT_TIME_ALLOCATIONS, INCOMING_EDGES, VEHICLE_TYPES
 
 log = logging.getLogger("traffic_rl.sumo.controller")
 
@@ -166,7 +166,7 @@ class FixedTimeController(SimpleDynamicController):
     """
 
     def __init__(self, fixed_time: int = 30,
-                 time_allocations: Optional[Mapping[str, float]] = None) -> None:
+                 time_allocations: Mapping[str, float] | None = None) -> None:
         super().__init__(time_allocations=time_allocations)
         self.fixed_time = int(fixed_time)
         self.time_allocations = {**self.time_allocations, "fixed_duration": self.fixed_time}

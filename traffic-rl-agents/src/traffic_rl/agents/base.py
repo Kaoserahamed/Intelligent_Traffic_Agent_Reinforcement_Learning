@@ -7,13 +7,14 @@ and CLI can treat Q-Learning, DQN, Double DQN and PPO uniformly.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from traffic_rl.config import ACTION_SIZE, STATE_SIZE
 from traffic_rl.logging import get_logger
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from pathlib import Path
 
 log = get_logger("traffic_rl.agents")
 

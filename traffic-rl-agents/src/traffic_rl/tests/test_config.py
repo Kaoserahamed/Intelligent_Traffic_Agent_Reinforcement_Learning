@@ -96,8 +96,7 @@ class TestDefaultConfig:
         assert len(cfg.agents) >= 4  # Q-Learning, DQN, DoubleDQN, PPO
 
     def test_default_log_and_plot_dirs_created(self, tmp_path: Path):
-        base = get_default_config()
-        cfg = resolve_config({"log_dir": tmp_path / "logs", "plot_dir": tmp_path / "plots"})
+        resolve_config({"log_dir": tmp_path / "logs", "plot_dir": tmp_path / "plots"})
         assert (tmp_path / "logs").exists()
         assert (tmp_path / "plots").exists()
 

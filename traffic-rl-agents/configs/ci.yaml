@@ -1,0 +1,45 @@
+# CI overlay — tiny but complete, runs on CPU with no SUMO credentials/AWS.
+version: 1
+
+run:
+  experiment: traffic-rl-ci
+  episodes: 2
+  save_interval: 1
+  early_stopping_patience: 0
+
+environment:
+  max_steps: 20
+  gui: false
+
+model:
+  hidden_sizes: [32, 32]
+  attention_heads: 2
+  attention_layers: 1
+
+agent:
+  kind: ppo
+  hyperparams:
+    batch_size: 8
+    rollout_steps: 32
+    ppo_epochs: 2
+    use_amp: false
+
+scenario:
+  include: [urban_offpeak]
+  unseen_holdout: false
+  regenerate: true
+  domain_randomization:
+    enabled: false
+
+evaluation:
+  episodes: 1
+  seeds: [1]
+  splits: [val]
+  baselines: [fixed_time]
+
+tracking:
+  sinks: [jsonl]
+  upload_to_s3: false
+
+artifacts:
+  upload_to_s3: false

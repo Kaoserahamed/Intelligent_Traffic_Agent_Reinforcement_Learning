@@ -1,0 +1,29 @@
+# Structured logging configuration (loaded by traffic_rl.observability.logging_config).
+# Environment variables (LOG_LEVEL, LOG_FORMAT, ...) take precedence over this file.
+version: 1
+
+logging:
+  level: INFO                 # DEBUG | INFO | WARNING | ERROR
+  format: json                # json (machine readable) | console (human)
+  use_queue: true             # move I/O off the SUMO stepping thread
+  console: true               # also echo to stderr (CI + local)
+  file:
+    enabled: true
+    name: train.log.jsonl     # relative to runs/<run_id>/logs/
+    max_bytes: 52428800
+    backup_count: 5
+  redaction:
+    enabled: true             # mask credentials via regex + resolved secrets
+  silence_noisy_loggers:
+    - traci
+    - matplotlib
+    - PIL
+    - botocore
+    - boto3
+    - urllib3
+
+# Log-record schema (validated in tests): see
+# src/traffic_rl/observability/json_schema/log_record.schema.json
+schema:
+  required: [timestamp, level, logger, message]
+  context_fields: [run_id, experiment, agent, scenario_id, episode, global_step, split]

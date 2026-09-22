@@ -1,0 +1,50 @@
+# Production overlay — long-horizon training, strict gates, spot checkpointing.
+version: 1
+
+run:
+  experiment: traffic-rl-prod
+  episodes: 1000
+  save_interval: 20
+  early_stopping_patience: 120
+
+environment:
+  max_steps: 720
+
+model:
+  hidden_sizes: [512, 512]
+  attention_heads: 8
+  attention_layers: 4
+
+agent:
+  kind: ppo
+  hyperparams:
+    batch_size: 512
+    rollout_steps: 8192
+    ppo_epochs: 10
+    use_amp: true
+
+scenario:
+  unseen_holdout: true
+  domain_randomization:
+    enabled: true
+    weather_probability: 0.3
+    incident_probability: 0.15
+    sensor_noise_probability: 0.15
+
+evaluation:
+  episodes: 50
+  seeds: [1, 2, 3, 4, 5]
+  splits: [val, test]
+  baselines: [fixed_time, actuated, max_pressure]
+  gates:
+    min_improvement_vs_fixed_time: 0.10
+    max_avg_delay_s: 45.0
+    max_p95_queue: 25.0
+
+tracking:
+  sinks: [jsonl, tensorboard, sagemaker, cloudwatch]
+  upload_to_s3: true
+
+artifacts:
+  upload_to_s3: true
+  keep_local_runs: 5

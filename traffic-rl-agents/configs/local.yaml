@@ -1,0 +1,45 @@
+# Local development overlay — small, fast, offline.
+# Used by `traffic-train train --config configs/base.yaml --overlay configs/local.yaml`
+version: 1
+
+run:
+  experiment: traffic-rl-local
+  episodes: 20
+  save_interval: 5
+  early_stopping_patience: 10
+
+environment:
+  max_steps: 240          # 20 minutes of traffic
+  gui: false
+
+observation:
+  temporal_stack: 1
+
+model:
+  hidden_sizes: [128, 128]
+
+agent:
+  kind: ppo
+  hyperparams:
+    batch_size: 64
+    rollout_steps: 512
+    ppo_epochs: 4
+    use_amp: false
+
+scenario:
+  include: [urban_offpeak, urban_am_peak]
+  unseen_holdout: false
+  domain_randomization:
+    enabled: false
+
+evaluation:
+  episodes: 3
+  seeds: [1]
+  splits: [val]
+
+tracking:
+  sinks: [jsonl]
+  upload_to_s3: false
+
+artifacts:
+  upload_to_s3: false

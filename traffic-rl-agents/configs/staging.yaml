@@ -1,0 +1,35 @@
+# Staging overlay — full-scale training on SageMaker with all scenarios,
+# evaluation gates enforced and artefacts uploaded to S3.
+version: 1
+
+run:
+  experiment: traffic-rl-staging
+  episodes: 300
+  save_interval: 25
+  early_stopping_patience: 60
+
+environment:
+  max_steps: 720
+
+scenario:
+  unseen_holdout: true
+  domain_randomization:
+    enabled: true
+    weather_probability: 0.2
+    incident_probability: 0.1
+
+evaluation:
+  episodes: 20
+  seeds: [1, 2, 3]
+  splits: [val, test]
+  baselines: [fixed_time, actuated, max_pressure]
+  gates:
+    min_improvement_vs_fixed_time: 0.05
+    max_avg_delay_s: 60.0
+
+tracking:
+  sinks: [jsonl, tensorboard, sagemaker, cloudwatch]
+  upload_to_s3: true
+
+artifacts:
+  upload_to_s3: true

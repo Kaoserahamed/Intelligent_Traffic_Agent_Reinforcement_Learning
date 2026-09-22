@@ -1,0 +1,133 @@
+# version: schema version of the experiment config (bumped on breaking change)
+version: 1
+
+run:
+  experiment: traffic-rl
+  seed: 42
+  episodes: 200
+  save_interval: 25
+  early_stopping_patience: 100
+  checkpoint_keep_last: 3
+  resume_from: null
+
+# -----------------------------------------------------------------------------
+# SUMO environment - real-world timing: the agent decides every 5 simulated
+# seconds and an episode covers one hour of traffic (720 decisions).
+# -----------------------------------------------------------------------------
+environment:
+  network: sim/intersection.sumocfg
+  max_steps: 720
+  step_length: 5            # simulated seconds per agent decision
+  sim_step_s: 1.0           # SUMO integration step
+  min_phase_duration: 10
+  max_phase_duration: 60
+  yellow_duration: 3
+  scale: 1.0                # demand multiplier (weather/incidents set this)
+  end_when_empty: true
+  time_to_teleport: 300
+  collision_action: teleport
+  gui: false
+  tripinfo_output: null
+  summary_output: null
+
+# -----------------------------------------------------------------------------
+# Observation / reward shaping (see docs/models.md)
+# -----------------------------------------------------------------------------
+observation:
+  include_vehicle_mix: true
+  include_pressure: true
+  include_time_of_day: true
+  include_phase: true
+  include_detector_mask: true
+  temporal_stack: 1
+  normalize: true
+
+reward:
+  clip: 100.0
+  weights:
+    delay: 1.0
+    queue: 0.5
+    pressure: 0.3
+    throughput: 1.0
+    switch_penalty: 0.2
+    emissions: 0.1
+    fairness: 0.1
+    emergency_priority: 2.0
+  low_speed_threshold: 2.0
+
+# -----------------------------------------------------------------------------
+# Model architecture (registry name - see traffic_rl.models.registry)
+# -----------------------------------------------------------------------------
+model:
+  name: attention_actor_critic
+  hidden_sizes: [256, 256]
+  attention_heads: 4
+  attention_layers: 2
+  dropout: 0.0
+  layer_norm: true
+  noisy: false
+
+# -----------------------------------------------------------------------------
+# Agent / algorithm (registry name - see traffic_rl.agents.registry)
+# -----------------------------------------------------------------------------
+agent:
+  kind: ppo
+  hyperparams:
+    lr: 0.0003
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_epsilon: 0.2
+    ppo_epochs: 10
+    batch_size: 256
+    rollout_steps: 2048
+    entropy_coef: 0.01
+    entropy_coef_final: 0.001
+    value_coef: 0.5
+    max_grad_norm: 0.5
+    target_kl: 0.02
+    use_amp: true
+    seed: null
+
+# -----------------------------------------------------------------------------
+# Scenarios (real-world traffic situations)
+# -----------------------------------------------------------------------------
+scenario:
+  catalog: configs/scenarios
+  include: []              # empty = every scenario in the catalog
+  exclude: []
+  splits:
+    train: 0.7
+    val: 0.15
+    test: 0.15
+  unseen_holdout: true
+  regenerate: false
+  domain_randomization:
+    enabled: true
+    demand_scale: [0.7, 1.3]
+    vehicle_mix_jitter: 0.2
+    weather_probability: 0.2
+    incident_probability: 0.1
+    sensor_noise_probability: 0.1
+    seed: null
+
+# -----------------------------------------------------------------------------
+# Evaluation, gates and artefacts
+# -----------------------------------------------------------------------------
+evaluation:
+  episodes: 20
+  seeds: [1, 2, 3]
+  splits: [val, test]
+  baselines: [fixed_time, actuated, max_pressure]
+  gates:
+    min_improvement_vs_fixed_time: 0.0
+    max_avg_delay_s: 0.0          # 0.0 disables the gate
+    max_p95_queue: 0.0
+
+tracking:
+  sinks: [jsonl, tensorboard]
+  log_every_episode: true
+  upload_to_s3: true
+
+artifacts:
+  upload_to_s3: true
+  keep_local_runs: 20

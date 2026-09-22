@@ -1,0 +1,90 @@
+[project]
+name = "traffic_rl"
+version = "0.1.0"
+description = "Reinforcement Learning for Traffic Signal Control - A production-grade package for training and evaluating RL agents (Q-Learning, DQN, Double DQN, PPO) in SUMO traffic simulations."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "TrafficRL Team"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Transportation",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "torch>=2.0.0",
+    "pandas>=1.5.0",
+    "matplotlib>=3.6.0",
+    "tqdm>=4.65.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+]
+sumo = [
+    "traci>=1.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/traffic_rl"
+Documentation = "https://github.com/your-org/traffic_rl#readme"
+Repository = "https://github.com/your-org/traffic_rl.git"
+
+[project.scripts]
+traffic-train = "traffic_rl.cli:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["traffic_rl*"]
+
+[tool.setuptools.package-data]
+traffic_rl = ["sim/*.xml", "sim/*.sumocfg", "sim/*.add.xml"]
+
+[tool.pytest.ini_options]
+testpaths = ["src/traffic_rl/tests"]
+pythonpath = ["src"]
+addopts = "--cov=traffic_rl --cov-report=term-missing -v"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W",  # pycodestyle errors/warnings
+    "I",              # isort
+    "N",              # pep8-naming
+    "UP",             # pyupgrade
+    "ICN",            # import conventions
+    "TCH",            # typing conventions
+    "RUF",            # ruff-specific rules
+]
+ignore = [
+    "E501",           # line too long (handled by black)
+    "N801",           #CamelCase for classes (allow special cases)
+]

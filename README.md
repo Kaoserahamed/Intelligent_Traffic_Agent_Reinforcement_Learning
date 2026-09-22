@@ -6,7 +6,7 @@ A production-grade Python package for training and evaluating RL agents
 (Q-Learning, DQN, Double DQN, PPO) in SUMO traffic simulations.
 
 - **Repository**: [github.com/Kaoserahamed/AI](https://github.com/Kaoserahamed/AI)
-- **Package source**: [`Qlearning - Copy/`](Qlearning%20-%20Copy/) (this repo's installable project:
+- **Package source**: [`traffic-rl-agents/`](traffic-rl-agents/) (this repo's installable project:
   `pyproject.toml`, `src/traffic_rl/`, `sim/`)
 
 ## Features
@@ -21,7 +21,7 @@ A production-grade Python package for training and evaluating RL agents
 
 ```
 AI/                      # repository root (this README)
-└── Qlearning - Copy/    # the installable project
+└── traffic-rl-agents/   # the installable project
     ├── pyproject.toml   # packaging and tooling configuration
     ├── sim/             # SUMO network, demand and additional files
     └── src/traffic_rl/  # package source
@@ -34,8 +34,8 @@ AI/                      # repository root (this README)
 git clone https://github.com/Kaoserahamed/AI.git
 cd AI
 
-# The installable package lives in the "Qlearning - Copy" folder
-cd "Qlearning - Copy"
+# The installable package lives in the "traffic-rl-agents" folder
+cd "traffic-rl-agents"
 
 # Install in development mode
 pip install -e ".[dev,sumo]"
@@ -80,7 +80,7 @@ traffic-train eval --agent dqn --model logs/train_dqn/best_model.pth --episodes 
 
 ## Project Structure
 
-Inside `Qlearning - Copy/src/traffic_rl/`:
+Inside `traffic-rl-agents/src/traffic_rl/`:
 
 ```
 traffic_rl/
@@ -141,14 +141,14 @@ config = resolve_config({"episodes": 300, "seed": 123})
 ### Running Tests
 
 ```bash
-cd "Qlearning - Copy"
+cd "traffic-rl-agents"
 pytest src/traffic_rl/tests/ -v --cov=traffic_rl
 ```
 
 ### Code Quality
 
 ```bash
-cd "Qlearning - Copy"
+cd "traffic-rl-agents"
 
 # Linting
 ruff check src/
@@ -162,4 +162,4 @@ black src/
 
 ## License
 
-MIT License - the license is declared in `Qlearning - Copy/pyproject.toml`.
+MIT License - the license is declared in `traffic-rl-agents/pyproject.toml`.

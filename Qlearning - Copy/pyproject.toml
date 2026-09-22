@@ -2,7 +2,7 @@
 name = "traffic_rl"
 version = "0.1.0"
 description = "Reinforcement Learning for Traffic Signal Control - A production-grade package for training and evaluating RL agents (Q-Learning, DQN, Double DQN, PPO) in SUMO traffic simulations."
-readme = "README.md"
+readme = {file = "../README.md", content-type = "text/markdown"}
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
@@ -41,9 +41,9 @@ sumo = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/traffic_rl"
-Documentation = "https://github.com/your-org/traffic_rl#readme"
-Repository = "https://github.com/your-org/traffic_rl.git"
+Homepage = "https://github.com/Kaoserahamed/AI"
+Documentation = "https://github.com/Kaoserahamed/AI#readme"
+Repository = "https://github.com/Kaoserahamed/AI.git"
 
 [project.scripts]
 traffic-train = "traffic_rl.cli:main"

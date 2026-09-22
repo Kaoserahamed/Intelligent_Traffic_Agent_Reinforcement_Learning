@@ -1,0 +1,58 @@
+# -----------------------------------------------------------------------------
+# Python bytecode / caches
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# -----------------------------------------------------------------------------
+# Build / packaging
+# -----------------------------------------------------------------------------
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+
+# -----------------------------------------------------------------------------
+# IDE / editor
+# -----------------------------------------------------------------------------
+.idea/
+.vscode/*.json        # keep formatter/settings tracked at repo root only
+!.vscode/settings.json
+!.vscode/java-formatter.xml
+*.swp
+.DS_Store
+Thumbs.db
+
+# -----------------------------------------------------------------------------
+# Secrets / local config
+# -----------------------------------------------------------------------------
+.env
+*.pem
+*.key
+
+# -----------------------------------------------------------------------------
+# Regenerable runtime artefacts (checkpoints, logs, plots, results)
+# -----------------------------------------------------------------------------
+logs/
+plots/
+comparison/
+*.csv
+*.pth
+*.pkl
+training_results.json
+traffic_comparison_results.json

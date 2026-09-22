@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Kaoserahamed/AI/schemas/log_record.schema.json",
+  "title": "TrafficRL structured log record",
+  "description": "One JSON object per log line, emitted by traffic_rl.observability.logging_config.JsonFormatter. Consumed by CloudWatch Logs Insights, Athena and the CI log gate.",
+  "type": "object",
+  "required": ["timestamp", "level", "logger", "message"],
+  "additionalProperties": true,
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC ISO-8601 timestamp with millisecond precision."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    },
+    "logger": {
+      "type": "string",
+      "pattern": "^traffic_rl(\\..+)?$"
+    },
+    "message": { "type": "string" },
+    "module": { "type": "string" },
+    "function": { "type": "string" },
+    "line": { "type": "integer", "minimum": 0 },
+    "event": {
+      "type": "string",
+      "description": "Stable event name from traffic_rl.observability.events.EVENT_CATALOGUE.",
+      "examples": ["training.episode.end", "eval.report.written"]
+    },
+    "exception": { "type": "string" },
+    "run_id": { "type": ["string", "null"] },
+    "experiment": { "type": ["string", "null"] },
+    "agent": { "type": ["string", "null"] },
+    "scenario_id": { "type": ["string", "null"] },
+    "split": { "type": ["string", "null"] },
+    "episode": { "type": ["integer", "null"] },
+    "global_step": { "type": ["integer", "null"] },
+    "episode_reward": { "type": ["number", "null"] },
+    "loss": { "type": ["number", "null"] },
+    "steps": { "type": ["integer", "null"] },
+    "host": { "type": "string" },
+    "pid": { "type": "integer" },
+    "trace_id": { "type": ["string", "null"] },
+    "span": { "type": ["string", "null"] }
+  }
+}

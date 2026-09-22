@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ncipollo/release-action@v3
+      - uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
@@ -76,7 +76,6 @@ jobs:
         with:
           role-to-assume: ${{ vars.SAGEMAKER_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-          mask-password: true
       - name: Deploy training job
         run: |
           python -m traffic_rl.scripts.train_sagemaker --config configs/prod.yaml

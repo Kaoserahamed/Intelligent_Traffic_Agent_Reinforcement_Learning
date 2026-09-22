@@ -6,7 +6,7 @@ A production-grade package for training and evaluating RL agents
 
 from __future__ import annotations
 
-from importlib import import_module
+from importlib import import_module  # noqa: F401  (kept for backwards compatibility)
 from pathlib import Path
 from typing import Any
 
@@ -40,7 +40,20 @@ from .config import (  # noqa: E402
     project_root,
 )
 from .defaults import get_default_config, resolve_config  # noqa: E402
-from .cli import main  # noqa: E402
+
+# ``traffic_rl.cli`` pulls in traci/argparse/agents; importing it eagerly would
+# make every ``import traffic_rl`` (settings, metrics, plotting, ...) pay for it.
+# It is resolved lazily through the module ``__getattr__`` below.
+_CLI_LAZY_ATTRS = {"main"}
+
+
+def __getattr__(name: str) -> Any:
+    """Lazily resolve the ``main`` entry point of :mod:`traffic_rl.cli`."""
+    if name in _CLI_LAZY_ATTRS:
+        from .cli import main
+
+        return main
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = [
     "__version__",

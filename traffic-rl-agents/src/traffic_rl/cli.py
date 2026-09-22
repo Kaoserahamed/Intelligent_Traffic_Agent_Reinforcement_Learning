@@ -5,10 +5,9 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
 
 from traffic_rl import __version__, resolve_config
-from traffic_rl.agents import QLearningAgent, DQNAgent, DoubleDQNAgent, PPOAgent
+from traffic_rl.agents import DoubleDQNAgent, DQNAgent, PPOAgent, QLearningAgent
 from traffic_rl.config import AgentConfig, EnvironmentConfig
 from traffic_rl.logging import configure_logging, get_logger, silence_third_party
 from traffic_rl.sumo.environment import TrafficEnvironment

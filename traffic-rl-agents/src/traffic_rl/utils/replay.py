@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import random
 from collections import deque
-from typing import Deque, List, Sequence, Tuple
 
 import numpy as np
 
-Transition = Tuple[np.ndarray, int, float, np.ndarray, bool]
+Transition = tuple[np.ndarray, int, float, np.ndarray, bool]
 
 
 class ReplayBuffer:
@@ -22,14 +21,14 @@ class ReplayBuffer:
         if capacity <= 0:
             raise ValueError(f"capacity must be positive, got {capacity}")
         self.capacity = capacity
-        self.buffer: Deque[Transition] = deque(maxlen=capacity)
+        self.buffer: deque[Transition] = deque(maxlen=capacity)
 
     def push(self, state: np.ndarray, action: int, reward: float,
              next_state: np.ndarray, done: bool) -> None:
         self.buffer.append((np.asarray(state), action, float(reward),
                             np.asarray(next_state), bool(done)))
 
-    def sample(self, batch_size: int) -> Tuple[np.ndarray, np.ndarray,
+    def sample(self, batch_size: int) -> tuple[np.ndarray, np.ndarray,
                                                np.ndarray, np.ndarray, np.ndarray]:
         if batch_size > len(self.buffer):
             raise ValueError(
@@ -48,7 +47,7 @@ class ReplayBuffer:
     def __len__(self) -> int:
         return len(self.buffer)
 
-    def __bool__(self) -> bool:  # noqa: D401
+    def __bool__(self) -> bool:
         return bool(self.buffer)
 
     def clear(self) -> None:

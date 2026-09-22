@@ -13,7 +13,10 @@ from __future__ import annotations
 
 import logging
 import sys
-from typing import Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from collections.abc import Iterable
 
 _PACKAGE_LOGGER = "traffic_rl"
 _DEFAULT_FMT = (

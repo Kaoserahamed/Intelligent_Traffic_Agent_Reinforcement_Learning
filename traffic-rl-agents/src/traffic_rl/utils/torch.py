@@ -18,7 +18,7 @@ def default_device():
     return torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def to_tensor(obj: Any, dtype=None, device=None) -> "torch.Tensor":  # type: ignore[name-defined]
+def to_tensor(obj: Any, dtype=None, device=None) -> torch.Tensor:  # type: ignore[name-defined]
     """Convert a numpy array or python sequence to a torch tensor if torch is available."""
     if not _HAS_TORCH:
         raise RuntimeError("torch is not installed; neural agents are unavailable.")
@@ -26,7 +26,7 @@ def to_tensor(obj: Any, dtype=None, device=None) -> "torch.Tensor":  # type: ign
     return _torch.as_tensor(obj, dtype=dtype, device=device)
 
 
-def detach_numpy(tensor: "torch.Tensor") -> Any:  # type: ignore[name-defined]
+def detach_numpy(tensor: torch.Tensor) -> Any:  # type: ignore[name-defined]
     """Detach a torch tensor and return a numpy array if torch is available."""
     if not _HAS_TORCH:
         raise RuntimeError("torch is not installed; neural agents are unavailable.")

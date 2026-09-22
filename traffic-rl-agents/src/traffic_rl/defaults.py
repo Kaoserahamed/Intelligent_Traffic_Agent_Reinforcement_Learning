@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import TYPE_CHECKING, Any
 
 from traffic_rl.config import (
     AgentConfig,
@@ -12,6 +13,33 @@ from traffic_rl.config import (
     EnvironmentConfig,
     TrainingConfig,
     project_root,
+)
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from collections.abc import Mapping, Sequence
+
+#: Override keys accepted by :func:`resolve_config` for the environment block.
+_ENVIRONMENT_OVERRIDE_KEYS: tuple[str, ...] = (
+    "config_path",
+    "max_steps",
+    "gui",
+    "seed",
+    "step_length",
+    "sim_step_s",
+    "min_phase_duration",
+    "max_phase_duration",
+    "yellow_duration",
+    "scale",
+    "tripinfo_output",
+    "summary_output",
+)
+
+#: Override keys accepted by :func:`resolve_config` for the training block.
+_TRAINING_OVERRIDE_KEYS: tuple[str, ...] = (
+    "episodes",
+    "save_interval",
+    "early_stopping_patience",
+    "seed",
 )
 
 
@@ -66,48 +94,45 @@ def get_default_config() -> Config:
 def resolve_config(overrides: Mapping[str, Any] | None = None) -> Config:
     """Build a :class:`Config` applying optional overrides.
 
-    Supported override keys: ``episodes``, ``save_interval``,
-    ``early_stopping_patience``, ``max_steps``, ``gui``, ``seed``,
-    ``log_dir``, ``plot_dir``, ``agents``.
+    Supported override keys:
+
+    * environment: ``config_path``, ``max_steps``, ``gui``, ``seed``,
+      ``step_length``, ``sim_step_s``, ``min_phase_duration``,
+      ``max_phase_duration``, ``yellow_duration``, ``scale``,
+      ``tripinfo_output``, ``summary_output``
+    * training: ``episodes``, ``save_interval``, ``early_stopping_patience``,
+      ``seed``
+    * top level: ``log_dir``, ``plot_dir``, ``agents``
+
+    Values are applied with :func:`dataclasses.replace`, so *every* supported
+    field can be overridden independently and validation still runs exactly
+    once.  (Previously ``{"seed": ...}`` alone was silently ignored because the
+    training block was only rebuilt when one of the schedule keys changed.)
     """
-    if not overrides:
-        return get_default_config()
     base = get_default_config()
-    overrides = dict(overrides)
+    if not overrides:
+        return base
+    values = dict(overrides)
 
-    env = base.environment
-    if any(k in overrides for k in ("max_steps", "gui", "seed")):
-        env = EnvironmentConfig(
-            config_path=env.config_path,
-            max_steps=int(overrides.get("max_steps", env.max_steps)),
-            gui=bool(overrides.get("gui", env.gui)),
-            seed=overrides.get("seed", env.seed),
-            step_length=env.step_length,
-            min_phase_duration=env.min_phase_duration,
-            max_phase_duration=env.max_phase_duration,
-            yellow_duration=env.yellow_duration,
-        )
+    environment = base.environment
+    env_updates = {k: values[k] for k in _ENVIRONMENT_OVERRIDE_KEYS if k in values}
+    if env_updates:
+        environment = replace(base.environment, **env_updates)
 
-    train = base.training
-    if any(
-        k in overrides
-        for k in ("episodes", "save_interval", "early_stopping_patience")
-    ):
-        train = TrainingConfig(
-            episodes=int(overrides.get("episodes", train.episodes)),
-            save_interval=int(overrides.get("save_interval", train.save_interval)),
-            early_stopping_patience=int(
-                overrides.get("early_stopping_patience", train.early_stopping_patience)
-            ),
-            seed=overrides.get("seed", train.seed),
-        )
+    training = base.training
+    train_updates = {k: values[k] for k in _TRAINING_OVERRIDE_KEYS if k in values}
+    if train_updates:
+        training = replace(base.training, **train_updates)
 
-    agents = base.agents
-    if "agents" in overrides:
-        agents = tuple(overrides["agents"])
-
-    log_dir = Path(overrides.get("log_dir", base.log_dir))
-    plot_dir = Path(overrides.get("plot_dir", base.plot_dir))
+    agents = tuple(values["agents"]) if "agents" in values else base.agents
+    log_dir = Path(values.get("log_dir", base.log_dir))
+    plot_dir = Path(values.get("plot_dir", base.plot_dir))
     log_dir.mkdir(parents=True, exist_ok=True)
     plot_dir.mkdir(parents=True, exist_ok=True)
-    return Config(environment=env, training=train, agents=agents, log_dir=log_dir, plot_dir=plot_dir)
+    return Config(
+        environment=environment,
+        training=training,
+        agents=agents,
+        log_dir=log_dir,
+        plot_dir=plot_dir,
+    )

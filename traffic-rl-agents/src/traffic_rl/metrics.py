@@ -11,7 +11,7 @@ The simulator wrapper (:mod:`traffic_rl.sumo.environment`) translates raw
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Mapping, Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -20,6 +20,9 @@ from traffic_rl.config import (
     STATE_SIZE,
     VEHICLE_TYPES,
 )
+
+if TYPE_CHECKING:  # pragma: no cover - typing only
+    from collections.abc import Mapping, Sequence
 
 
 @dataclass
@@ -77,7 +80,15 @@ def compute_state(snapshot: WorldSnapshot) -> np.ndarray:
         density = count / max(length / 100.0, 1.0)
         state.append(min(density / 5.0, 1.0))
 
-        return np.array(state, dtype=np.float32)
+    # NOTE: the array must be built *after* the loop over every incoming edge.
+    # Returning inside the loop used to yield a 7-dimensional vector while the
+    # agents (and :data:`~traffic_rl.config.STATE_SIZE`) expect STATE_SIZE = 28.
+    state_array = np.array(state, dtype=np.float32)
+    if state_array.shape[0] != STATE_SIZE:  # pragma: no cover - defensive
+        raise ValueError(
+            f"state vector has {state_array.shape[0]} features, expected {STATE_SIZE}"
+        )
+    return state_array
 
 
 # -----------------------------------------------------------------------------

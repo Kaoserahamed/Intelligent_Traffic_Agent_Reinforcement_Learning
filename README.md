@@ -5,6 +5,10 @@ Reinforcement Learning for Traffic Signal Control
 A production-grade Python package for training and evaluating RL agents
 (Q-Learning, DQN, Double DQN, PPO) in SUMO traffic simulations.
 
+- **Repository**: [github.com/Kaoserahamed/AI](https://github.com/Kaoserahamed/AI)
+- **Package source**: [`Qlearning - Copy/`](Qlearning%20-%20Copy/) (this repo's installable project:
+  `pyproject.toml`, `src/traffic_rl/`, `sim/`)
+
 ## Features
 
 - **Multiple RL Algorithms**: Q-Learning, DQN, Double DQN, PPO
@@ -13,12 +17,25 @@ A production-grade Python package for training and evaluating RL agents
 - **Configurable Environments**: Immutable config dataclasses with validation
 - **CLI Interface**: Easy-to-use command-line tools for training and evaluation
 
+## Repository Layout
+
+```
+AI/                      # repository root (this README)
+└── Qlearning - Copy/    # the installable project
+    ├── pyproject.toml   # packaging and tooling configuration
+    ├── sim/             # SUMO network, demand and additional files
+    └── src/traffic_rl/  # package source
+```
+
 ## Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/traffic_rl.git
-cd traffic_rl
+git clone https://github.com/Kaoserahamed/AI.git
+cd AI
+
+# The installable package lives in the "Qlearning - Copy" folder
+cd "Qlearning - Copy"
 
 # Install in development mode
 pip install -e ".[dev,sumo]"
@@ -33,24 +50,37 @@ pip install -e ".[dev,sumo]"
 
 ## Quick Start
 
+All CLI usage goes through the `traffic-train` entry point, which exposes a
+`train` and an `eval` subcommand.
+
 ### Training an Agent
 
 ```bash
 # Train a DQN agent
-traffic-train --agent dqn --episodes 200 --seed 42
+traffic-train train --agent dqn --episodes 200 --seed 42
 
 # Train with GUI visualization
-traffic-train --agent ppo --gui --episodes 100
+traffic-train train --agent ppo --gui --episodes 100
+```
+
+The same commands can be run from the CLI module without installing the
+console script (the `runpy` warning below is harmless - the package imports
+`traffic_rl.cli` to expose `main`):
+
+```bash
+python -m traffic_rl.cli train --agent dqn --episodes 200 --seed 42
 ```
 
 ### Evaluating an Agent
 
 ```bash
 # Evaluate a trained model
-traffic-eval --agent dqn --model logs/train_dqn/best_model.pth --episodes 10
+traffic-train eval --agent dqn --model logs/train_dqn/best_model.pth --episodes 10
 ```
 
 ## Project Structure
+
+Inside `Qlearning - Copy/src/traffic_rl/`:
 
 ```
 traffic_rl/
@@ -111,12 +141,15 @@ config = resolve_config({"episodes": 300, "seed": 123})
 ### Running Tests
 
 ```bash
+cd "Qlearning - Copy"
 pytest src/traffic_rl/tests/ -v --cov=traffic_rl
 ```
 
 ### Code Quality
 
 ```bash
+cd "Qlearning - Copy"
+
 # Linting
 ruff check src/
 
@@ -129,4 +162,4 @@ black src/
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT License - the license is declared in `Qlearning - Copy/pyproject.toml`.
